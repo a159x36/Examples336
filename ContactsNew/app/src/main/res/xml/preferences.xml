@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:defaultValue="@bool/sort_rev_default"
+        android:icon="@drawable/ic_sort_by_alpha_black_24dp"
+        android:key="@string/sort_rev_key"
+        android:title="Reverse Sort" />
+    <CheckBoxPreference
+        android:defaultValue="@bool/dial_default"
+        android:icon="@drawable/ic_phone_black_24dp"
+        android:key="@string/dial_key"
+        android:title="Call Directly" />
+    <ListPreference
+        android:defaultValue="1"
+        android:entries="@android:array/phoneTypes"
+        android:entryValues="@android:array/emailAddressTypes"
+        android:key="list_preference_1"
+        android:title="List preference" />
+</PreferenceScreen>
