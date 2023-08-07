@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Beaches</string>
+    <string name="reload">Reload</string>
+    <string name="beach">Beach</string>
+</resources>
