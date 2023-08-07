@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Matching Game</string>
+    <string name="completed">Complete</string>
+    <string name="score">Score</string>
+</resources>
