@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SimpleMatch</string>
+    <string name="restart">Restart</string>
+    <string name="complete">Complete:</string>
+    <string name="score">Score:</string>
+    <string name="sure">Are You Sure?</string>
+</resources>
