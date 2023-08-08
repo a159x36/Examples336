@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="IconLocation">
+        <ignore path="src/main/res/drawable/bubble.png" />
+        <ignore path="src/main/res/drawable/greyball.png" />
+        <ignore path="src/main/res/drawable/redball.png" />
+    </issue>
+    <issue id="UnusedResources">
+        <ignore path="src/main/res/drawable/greyball.png" />
+        <ignore path="src/main/res/drawable/redball.png" />
+    </issue>
+</lint>

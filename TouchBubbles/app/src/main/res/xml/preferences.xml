@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:title="@string/settings_title">
+
+   
+    <CheckBoxPreference
+        android:defaultValue="@string/default_native"
+        android:key="@string/native_key"
+        android:title="@string/native_title" />
+
+    <ListPreference
+        android:defaultValue="@string/default_nbubbles"
+        android:summary="%s"
+        android:entries="@array/nbubblevals"
+        android:entryValues="@array/nbubblevals"
+        android:key="@string/nsmall_key"
+        android:title="@string/nsmbubbles_title" />
+    <ListPreference
+        android:defaultValue="@string/default_nlarge"
+        android:summary="%s"
+        android:entries="@array/nbubblevals"
+        android:entryValues="@array/nbubblevals"
+        android:key="@string/nlarge_key"
+        android:title="@string/nlgbubbles_title" />
+
+    <ListPreference
+        android:defaultValue="@string/default_smallmin"
+        android:summary="%s"
+        android:entries="@array/sizevals"
+        android:entryValues="@array/sizevals"
+        android:key="@string/smallmin_key"
+        android:title="@string/minsmall_title" />
+
+    <ListPreference
+        android:defaultValue="@string/default_smallmax"
+        android:summary="%s"
+        android:entries="@array/sizevals"
+        android:entryValues="@array/sizevals"
+        android:key="@string/smallmax_key"
+        android:title="@string/maxsmall_title" />
+
+    <ListPreference
+        android:defaultValue="@string/default_largemin"
+        android:summary="%s"
+        android:entries="@array/sizevals"
+        android:entryValues="@array/sizevals"
+        android:key="@string/largemin_key"
+        android:title="@string/minlarge_title" />
+
+    <ListPreference
+        android:defaultValue="@string/default_largemax"
+        android:summary="%s"
+        android:entries="@array/sizevals"
+        android:entryValues="@array/sizevals"
+        android:key="@string/largemax_key"
+        android:title="@string/maxlarge_title" />
+
+    <ListPreference
+        android:defaultValue="@string/default_gravity"
+        android:summary="%s"
+        android:entries="@array/gravityvals"
+        android:entryValues="@array/gravityvals"
+        android:key="@string/gravity_key"
+        android:title="@string/gravity_title" />
+
+    <ListPreference
+        android:defaultValue="@string/default_updatetime"
+        android:summary="%s"
+        android:entries="@array/updateentries"
+        android:entryValues="@array/updatevals"
+        android:key="@string/updatetime_key"
+        android:title="@string/updatetime_title" />
+
+    <ListPreference
+        android:defaultValue="@string/default_dampening"
+        android:summary="%s"
+        android:entries="@array/floatvals"
+        android:entryValues="@array/floatvals"
+        android:key="@string/dampening_key"
+        android:title="@string/dampening_title" />
+
+    <ListPreference
+        android:defaultValue="@string/default_rigidity"
+        android:summary="%s"
+        android:entries="@array/floatvals"
+        android:entryValues="@array/floatvals"
+        android:key="@string/rigidity_key"
+        android:title="@string/rigidity_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="@string/default_compress"
+        android:key="@string/compress_key"
+        android:title="@string/compress_title" />
+    <!--
+    <SeekBarDialogPreference xmlns:asp="http://schemas.android.com/apk/res-auto"
+        android:key="seek_bar_key"
+        android:title="Large Bubbles"
+        android:summary="%s"
+        android:defaultValue="100"
+        android:max="1000" />
+        -->
+      <!--  asp:min="0"-->
+</PreferenceScreen>
