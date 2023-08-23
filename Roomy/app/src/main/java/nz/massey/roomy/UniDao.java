@@ -14,6 +14,9 @@ public interface UniDao {
     long insert(Course course);
     @Query("SELECT * FROM course")
     List<Course> getAllCourses();
+    @Query("SELECT * FROM lecturer")
+    List<Lecturer> getLecturers();
+
     @Insert
     long insert(Lecturer lect);
     @Query("DELETE FROM courseoffering")
@@ -25,4 +28,7 @@ public interface UniDao {
     List<CourseOffering> getAllOfferings();
     @Insert
     long insert(CourseOffering co);
+    @Transaction
+    @Query("SELECT course.name AS coursename, lecturer.name AS lecturername, courseoffering.year, courseoffering.semester FROM course,courseoffering,lecturer WHERE lecturer.name=:lect AND lecturer_id=lecturer.id AND course_id=course.id")
+    List<CourseInfo> getCourseInfo(String lect);
 }

@@ -11,40 +11,51 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import nz.massey.roomy.databinding.CourseBinding;
+
 public class CourseAdapter  extends RecyclerView.Adapter<CourseAdapter.CourseViewHolder> {
-
+    private static final String TAG = "CourseAdapter";
+    CourseBinding mCourseLayout;
     class CourseViewHolder extends RecyclerView.ViewHolder {
-        private final TextView courseNameView;
+        private final CourseBinding courseLayout;
 
-        private CourseViewHolder(View itemView) {
-            super(itemView);
-            courseNameView = itemView.findViewById(R.id.course_name);
+        private CourseViewHolder(CourseBinding item) {
+            super(item.getRoot());
+            courseLayout = item;
         }
     }
 
     private final LayoutInflater mInflater;
-    private List<Course> mCourses;
+    private List<CourseInfo> mCourses;
 
-    CourseAdapter(Context context) { mInflater = LayoutInflater.from(context); }
+    CourseAdapter(Context context) {
+        mInflater = LayoutInflater.from(context);
+        mCourseLayout=CourseBinding.inflate(mInflater);
+    }
 
     @Override
     public CourseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = mInflater.inflate(R.layout.course, parent, false);
+        CourseBinding itemView = CourseBinding.inflate(mInflater, parent, false);
         return new CourseViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(CourseViewHolder holder, int position) {
         if (mCourses != null) {
-            Course current = mCourses.get(position);
-            holder.courseNameView.setText(current.name);
+
+            CourseInfo current = mCourses.get(position);
+            Log.i(TAG,"c:" + current.coursename);
+            holder.courseLayout.courseName.setText(current.coursename);
+            holder.courseLayout.lecturerName.setText(current.lecturername);
+            holder.courseLayout.year.setText(""+current.year);
+            holder.courseLayout.semester.setText("s"+current.semester);
         } else {
             // Covers the case of data not being ready yet.
-            holder.courseNameView.setText("No Course");
+            holder.courseLayout.courseName.setText("No Course");
         }
     }
 
-    public void setCourses(List<Course> cs) {
+    public void setCourses(List<CourseInfo> cs) {
         mCourses=cs;
         notifyDataSetChanged();
     }

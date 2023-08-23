@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Roomy</string>
+    <string name="name">Name:</string>
+    <string name="badnumber">Bad Number</string>
 </resources>

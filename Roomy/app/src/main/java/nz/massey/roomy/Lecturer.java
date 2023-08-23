@@ -14,4 +14,8 @@ class Lecturer {
         this.phone=phone;
         this.office=office;
     }
+    @Override
+    public String toString() {
+        return name;
+    }
 }

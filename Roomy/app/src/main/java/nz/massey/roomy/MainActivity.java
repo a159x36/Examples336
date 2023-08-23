@@ -1,42 +1,72 @@
 package nz.massey.roomy;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Spinner;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import java.util.List;
+import nz.massey.roomy.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity {
-
-
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     private static final String TAG = "roomy";
-    UniDao mDao;
-    CourseAdapter mCourses;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        UniDatabase db=UniDatabase.getDatabase(this);
-        RecyclerView r=findViewById(R.id.courses);
-        mCourses=new CourseAdapter(this);
-        r.setAdapter(mCourses);
-        r.setLayoutManager(new LinearLayoutManager(this));
-
-        mDao=db.UniDao();
+    public UniDao mDao;
+    public CourseAdapter mCourses;
+    public ActivityMainBinding mMainLayout;
+    public void updatelects() {
         new Thread(() -> {
-            List<Course> co = mDao.getCourses("Martin",2020);
-            mCourses.setCourses(co);
-            Log.i(TAG,"Got "+co.size()+" courses");
-            for (Course c : co) {
-                Log.i(TAG, "Course :" + c.name + " " + c.campus);
+            List<Lecturer> le= mDao.getLecturers();
+            mMainLayout.namespinner.post(() ->
+                    mMainLayout.namespinner.setAdapter(
+                            new ArrayAdapter<Lecturer>(this, android.R.layout.simple_spinner_dropdown_item, le)));
+            mMainLayout.namespinner.setOnItemSelectedListener(this);
+        }).start();
+    }
+    public void updatecourselist() {
+        new Thread(() -> {
+            Lecturer le=(Lecturer)mMainLayout.namespinner.getSelectedItem();
+            if(le!=null) {
+                List<CourseInfo> co = mDao.getCourseInfo(le.name);
+                mMainLayout.namespinner.post(() -> mCourses.setCourses(co));
             }
         }).start();
     }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mMainLayout=ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(mMainLayout.getRoot());
+        UniDatabase db=UniDatabase.getDatabase(this);
+        mCourses=new CourseAdapter(this);
+        mMainLayout.courses.setAdapter(mCourses);
+        mMainLayout.courses.setLayoutManager(new LinearLayoutManager(this));
+        mMainLayout.floatingActionButton.setOnClickListener((v)->
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .replace(R.id.fragment_container_view, new NewOffering())
+                    .commit()
+        );
+               // startActivity(new Intent(this,NewOffering.class)));
+        mDao =db.UniDao();
+        updatelects();
+        updatecourselist();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updatelects();
+        updatecourselist();
+    }
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        updatecourselist();
+    }
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {}
 }
