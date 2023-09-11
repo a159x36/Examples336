@@ -22,7 +22,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Lecturer"
+                android:text="@string/lecturer"
                 android:textSize="24sp" />
 
             <Spinner
@@ -43,7 +43,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Course"
+                android:text="@string/course"
                 android:textSize="24sp" />
 
             <Spinner
@@ -63,13 +63,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Year"
+                android:text="@string/year"
                 android:textSize="24sp" />
 
             <EditText
                 android:id="@+id/year"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="2"
                 android:inputType="number" />
         </LinearLayout>
@@ -84,13 +84,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Semester"
+                android:text="@string/semester"
                 android:textSize="24sp" />
 
             <EditText
                 android:id="@+id/semester"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="2"
                 android:inputType="number" />
         </LinearLayout>
@@ -105,13 +105,20 @@
                 android:id="@+id/okbutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add" />
+                android:text="@string/add" />
 
             <Button
-                android:id="@+id/cencelbutton"
+                android:id="@+id/cancelbutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Close" />
+                android:text="@string/close" />
+
+            <Button
+                android:id="@+id/updatebutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/update" />
+
         </LinearLayout>
     </LinearLayout>
 

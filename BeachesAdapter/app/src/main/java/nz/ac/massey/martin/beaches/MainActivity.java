@@ -47,7 +47,9 @@ public class MainActivity extends Activity {
     };
     // if you like roads instead of beaches
     String[] urls = {
-           // "http://www.trafficnz.info/camera/601.jpg",
+            "http://www.trafficnz.info/camera/818.jpg",
+            "http://www.trafficnz.info/camera/819.jpg",
+            "http://www.trafficnz.info/camera/820.jpg",
             "http://www.trafficnz.info/camera/654.jpg",
             "http://www.trafficnz.info/camera/603.jpg",
             "http://www.trafficnz.info/camera/604.jpg",
@@ -57,7 +59,7 @@ public class MainActivity extends Activity {
             "http://www.trafficnz.info/camera/610.jpg",
             "http://www.trafficnz.info/camera/612.jpg",
             "http://www.trafficnz.info/camera/651.jpg",
-            "http://www.trafficnz.info/camera/653.jpg",
+         //   "http://www.trafficnz.info/camera/653.jpg",
             "http://www.trafficnz.info/camera/10.jpg",
     };
 
