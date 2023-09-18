@@ -117,7 +117,8 @@
                 android:id="@+id/updatebutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/update" />
+                android:text="@string/update"
+                android:visibility="gone" />
 
         </LinearLayout>
     </LinearLayout>

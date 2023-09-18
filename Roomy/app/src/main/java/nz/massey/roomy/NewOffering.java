@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import nz.massey.roomy.databinding.ActivityNewOfferingBinding;
+import nz.massey.roomy.databinding.OfferingBinding;
 
 public class NewOffering extends Fragment {
     void insertnew() {
@@ -23,7 +23,7 @@ public class NewOffering extends Fragment {
             int year = Integer.parseInt(mNewOfferingLayout.year.getText().toString());
             int semester = Integer.parseInt(mNewOfferingLayout.semester.getText().toString());
             CourseOffering co = new CourseOffering(c.id, l.id, year, semester);
-            MainActivity act = (MainActivity) getActivity();
+            MainActivity act = (MainActivity)getActivity();
             new Thread(() -> {
                 act.mDao.insert(co);
                 act.updatecourselist();
@@ -45,15 +45,15 @@ public class NewOffering extends Fragment {
             });
         }).start();
     }
-    ActivityNewOfferingBinding mNewOfferingLayout;
+    OfferingBinding mNewOfferingLayout;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mNewOfferingLayout= ActivityNewOfferingBinding.inflate(getLayoutInflater());
+        mNewOfferingLayout= OfferingBinding.inflate(getLayoutInflater());
         populatespinners();
         mNewOfferingLayout.okbutton.setOnClickListener((v)->insertnew());
-        mNewOfferingLayout.cencelbutton.setOnClickListener((v)->
+        mNewOfferingLayout.cancelbutton.setOnClickListener((v)->
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)

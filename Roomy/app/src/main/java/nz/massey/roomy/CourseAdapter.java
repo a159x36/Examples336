@@ -1,12 +1,16 @@
 package nz.massey.roomy;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -28,15 +32,38 @@ public class CourseAdapter  extends RecyclerView.Adapter<CourseAdapter.CourseVie
     private final LayoutInflater mInflater;
     private List<CourseInfo> mCourses;
 
-    CourseAdapter(Context context) {
+    MainActivity mContext;
+
+    CourseAdapter(AppCompatActivity context) {
+        mContext=(MainActivity) context;
         mInflater = LayoutInflater.from(context);
         mCourseLayout=CourseBinding.inflate(mInflater);
     }
 
     @Override
-    public CourseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CourseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         CourseBinding itemView = CourseBinding.inflate(mInflater, parent, false);
-        return new CourseViewHolder(itemView);
+        CourseViewHolder vh=new CourseViewHolder(itemView);
+        itemView.edit.setOnClickListener(view -> {
+            int id=mCourses.get(vh.getAbsoluteAdapterPosition()).id;
+            EditOffering frag=new EditOffering();
+            Bundle b=new Bundle();
+            b.putInt("id",id);
+            frag.setArguments(b);
+            mContext.getSupportFragmentManager()
+                    .beginTransaction()
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .replace(R.id.fragment_container_view, frag)
+                    .commit();
+        });
+        itemView.delete.setOnClickListener(view -> {
+            new Thread(() -> {
+                long id=mCourses.get(vh.getAbsoluteAdapterPosition()).id;
+                mContext.mDao.deleteOffering(id);
+                mContext.updatecourselist();
+            }).start();
+        });
+        return vh;
     }
 
     @Override

@@ -13,51 +13,66 @@ import androidx.fragment.app.FragmentTransaction;
 
 import java.util.List;
 
-import nz.massey.roomy.databinding.ActivityNewOfferingBinding;
+import nz.massey.roomy.databinding.OfferingBinding;
 
 public class EditOffering extends Fragment {
-    void insertnew() {
-        Lecturer l=(Lecturer)mNewOfferingLayout.lectspinner.getSelectedItem();
-        Course c=(Course)mNewOfferingLayout.coursespinner.getSelectedItem();
+    private int mId;
+    void update() {
+        Lecturer l=(Lecturer) mEditOfferingLayout.lectspinner.getSelectedItem();
+        Course c=(Course) mEditOfferingLayout.coursespinner.getSelectedItem();
         try {
-            int year = Integer.parseInt(mNewOfferingLayout.year.getText().toString());
-            int semester = Integer.parseInt(mNewOfferingLayout.semester.getText().toString());
-            CourseOffering co = new CourseOffering(c.id, l.id, year, semester);
+            int year = Integer.parseInt(mEditOfferingLayout.year.getText().toString());
+            int semester = Integer.parseInt(mEditOfferingLayout.semester.getText().toString());
             MainActivity act = (MainActivity) getActivity();
             new Thread(() -> {
-                act.mDao.insert(co);
+                act.mDao.update(mId,l.id,c.id,year,semester);
                 act.updatecourselist();
             }).start();
         } catch (NumberFormatException e) {
             Toast.makeText(getActivity(),R.string.badnumber,Toast.LENGTH_SHORT).show();
         }
     }
-    public void populatespinners() {
+    public void populatedata() {
         new Thread(() -> {
             MainActivity act=(MainActivity)getActivity();
+            CourseOffering coff= act.mDao.getOffering(mId);
             List<Lecturer> le=act.mDao.getLecturers();
             List<Course> co=act.mDao.getAllCourses();
             getActivity().runOnUiThread(() -> {
-                mNewOfferingLayout.year.setText("2023");
-                mNewOfferingLayout.semester.setText("2");
-                mNewOfferingLayout.lectspinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, le));
-                mNewOfferingLayout.coursespinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, co));
+                mEditOfferingLayout.year.setText("2023");
+                mEditOfferingLayout.semester.setText("2");
+                mEditOfferingLayout.lectspinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, le));
+                mEditOfferingLayout.coursespinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, co));
+                for(int i=0;i<le.size();i++)
+                    if(le.get(i).id==coff.lecturer_id)
+                        mEditOfferingLayout.lectspinner.setSelection(i);
+                for(int i=0;i<co.size();i++)
+                    if(co.get(i).id==coff.course_id)
+                        mEditOfferingLayout.coursespinner.setSelection(i);
+                mEditOfferingLayout.year.setText(""+coff.year);
+                mEditOfferingLayout.semester.setText(""+coff.semester);
             });
         }).start();
     }
-    ActivityNewOfferingBinding mNewOfferingLayout;
+    OfferingBinding mEditOfferingLayout;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mNewOfferingLayout= ActivityNewOfferingBinding.inflate(getLayoutInflater());
-        populatespinners();
-        mNewOfferingLayout.okbutton.setOnClickListener((v)->insertnew());
-        mNewOfferingLayout.cencelbutton.setOnClickListener((v)->
+        mId=getArguments().getInt("id",0);
+        mEditOfferingLayout = OfferingBinding.inflate(getLayoutInflater());
+        populatedata();
+        mEditOfferingLayout.okbutton.setVisibility(View.GONE);
+        mEditOfferingLayout.cancelbutton.setVisibility(View.GONE);
+        mEditOfferingLayout.updatebutton.setVisibility(View.VISIBLE);
+        mEditOfferingLayout.updatebutton.setOnClickListener((v)->
+        {
+            update();
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-                    .remove(this).commit());
-        return mNewOfferingLayout.getRoot();
+                    .remove(this).commit();
+        });
+        return mEditOfferingLayout.getRoot();
     }
 }
