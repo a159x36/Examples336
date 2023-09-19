@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,23 +18,27 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public UniDao mDao;
     public CourseAdapter mCourses;
     public ActivityMainBinding mMainLayout;
+    final static String NAME_KEY= "NAME_KEY";
+    int mSelectedLect=0;
     public void updatelects() {
-        new Thread(() -> {
+        UniDatabase.runOnDatabaseExecutor(() -> {
             List<Lecturer> le= mDao.getLecturers();
-            mMainLayout.namespinner.post(() ->
-                    mMainLayout.namespinner.setAdapter(
-                            new ArrayAdapter<Lecturer>(this, android.R.layout.simple_spinner_dropdown_item, le)));
-            mMainLayout.namespinner.setOnItemSelectedListener(this);
-        }).start();
+            mMainLayout.namespinner.post(() -> {
+                mMainLayout.namespinner.setAdapter(
+                        new ArrayAdapter<Lecturer>(this, android.R.layout.simple_spinner_dropdown_item, le));
+                mMainLayout.namespinner.setSelection(mSelectedLect);
+                mMainLayout.namespinner.setOnItemSelectedListener(this);
+            });
+        });
     }
     public void updatecourselist() {
-        new Thread(() -> {
+        UniDatabase.runOnDatabaseExecutor(() -> {
             Lecturer le=(Lecturer)mMainLayout.namespinner.getSelectedItem();
             if(le!=null) {
                 List<CourseInfo> co = mDao.getCourseInfo(le.name);
                 mMainLayout.namespinner.post(() -> mCourses.setCourses(co));
             }
-        }).start();
+        });
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +56,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     .replace(R.id.fragment_container_view, new NewOffering())
                     .commit()
         );
-               // startActivity(new Intent(this,NewOffering.class)));
         mDao =db.UniDao();
+        if (savedInstanceState != null) {
+            mSelectedLect=savedInstanceState.getInt(NAME_KEY, 0);
+        }
         updatelects();
         updatecourselist();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(NAME_KEY, mMainLayout.namespinner.getSelectedItemPosition());
     }
 
     @Override
@@ -65,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        mSelectedLect=i;
         updatecourselist();
     }
     @Override

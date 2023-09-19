@@ -22,7 +22,6 @@ public class CourseAdapter  extends RecyclerView.Adapter<CourseAdapter.CourseVie
     CourseBinding mCourseLayout;
     class CourseViewHolder extends RecyclerView.ViewHolder {
         private final CourseBinding courseLayout;
-
         private CourseViewHolder(CourseBinding item) {
             super(item.getRoot());
             courseLayout = item;
@@ -57,11 +56,11 @@ public class CourseAdapter  extends RecyclerView.Adapter<CourseAdapter.CourseVie
                     .commit();
         });
         itemView.delete.setOnClickListener(view -> {
-            new Thread(() -> {
+            UniDatabase.runOnDatabaseExecutor(() -> {
                 long id=mCourses.get(vh.getAbsoluteAdapterPosition()).id;
                 mContext.mDao.deleteOffering(id);
                 mContext.updatecourselist();
-            }).start();
+            });
         });
         return vh;
     }
@@ -69,9 +68,8 @@ public class CourseAdapter  extends RecyclerView.Adapter<CourseAdapter.CourseVie
     @Override
     public void onBindViewHolder(CourseViewHolder holder, int position) {
         if (mCourses != null) {
-
             CourseInfo current = mCourses.get(position);
-            Log.i(TAG,"c:" + current.coursename);
+            //Log.i(TAG,"c:" + current.coursename);
             holder.courseLayout.courseName.setText(current.coursename);
             holder.courseLayout.lecturerName.setText(current.lecturername);
             holder.courseLayout.year.setText(""+current.year);
@@ -88,7 +86,6 @@ public class CourseAdapter  extends RecyclerView.Adapter<CourseAdapter.CourseVie
     }
     @Override
     public int getItemCount() {
-
         if (mCourses != null) {
             return mCourses.size();
         }

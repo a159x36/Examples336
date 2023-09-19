@@ -24,23 +24,21 @@ public class EditOffering extends Fragment {
             int year = Integer.parseInt(mEditOfferingLayout.year.getText().toString());
             int semester = Integer.parseInt(mEditOfferingLayout.semester.getText().toString());
             MainActivity act = (MainActivity) getActivity();
-            new Thread(() -> {
+            UniDatabase.runOnDatabaseExecutor(() -> {
                 act.mDao.update(mId,l.id,c.id,year,semester);
                 act.updatecourselist();
-            }).start();
+            });
         } catch (NumberFormatException e) {
             Toast.makeText(getActivity(),R.string.badnumber,Toast.LENGTH_SHORT).show();
         }
     }
     public void populatedata() {
-        new Thread(() -> {
+        UniDatabase.runOnDatabaseExecutor(() -> {
             MainActivity act=(MainActivity)getActivity();
             CourseOffering coff= act.mDao.getOffering(mId);
             List<Lecturer> le=act.mDao.getLecturers();
             List<Course> co=act.mDao.getAllCourses();
             getActivity().runOnUiThread(() -> {
-                mEditOfferingLayout.year.setText("2023");
-                mEditOfferingLayout.semester.setText("2");
                 mEditOfferingLayout.lectspinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, le));
                 mEditOfferingLayout.coursespinner.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, co));
                 for(int i=0;i<le.size();i++)
@@ -52,7 +50,7 @@ public class EditOffering extends Fragment {
                 mEditOfferingLayout.year.setText(""+coff.year);
                 mEditOfferingLayout.semester.setText(""+coff.semester);
             });
-        }).start();
+        });
     }
     OfferingBinding mEditOfferingLayout;
     @Override

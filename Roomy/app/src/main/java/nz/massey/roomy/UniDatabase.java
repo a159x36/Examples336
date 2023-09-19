@@ -36,6 +36,9 @@ public abstract class UniDatabase extends RoomDatabase {
         }
         return INSTANCE;
     }
+    public static void runOnDatabaseExecutor(Runnable r) {
+        databaseWriteExecutor.execute(r);
+    }
     private static RoomDatabase.Callback sRoomDatabaseCallback = new RoomDatabase.Callback() {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
