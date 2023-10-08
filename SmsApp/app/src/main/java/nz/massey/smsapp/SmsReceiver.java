@@ -50,7 +50,7 @@ public class SmsReceiver extends BroadcastReceiver {
                 NotificationCompat.Builder mBuilder =
                         new NotificationCompat.Builder(context,CHANNEL_ID)
                                 .setSmallIcon(R.drawable.ic_mail_outline_black_24dp)
-                                .setContentTitle("Mail")
+                                .setContentTitle("SMS Message")
                                 .setContentText(strMessage);
 
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
