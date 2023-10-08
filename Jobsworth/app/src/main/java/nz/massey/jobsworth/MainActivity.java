@@ -3,19 +3,34 @@ package nz.massey.jobsworth;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.JobIntentService;
 
+import android.Manifest;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+import nz.massey.jobsworth.databinding.ActivityMainBinding;
 
+public class MainActivity extends AppCompatActivity {
+    public ActivityMainBinding mMainLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startService(new Intent(this,MyIntentService.class));
-//         JobIntentService.enqueueWork(this, MyJobIntentService.class, 159336, new Intent());
-//        MyJobService.scheduleJob(this);
+        mMainLayout=ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(mMainLayout.getRoot());
+        if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 0);
+        }
+        mMainLayout.intentButton.setOnClickListener((view ->
+            startService(new Intent(this,MyIntentService.class))
+        ));
+        mMainLayout.jobIntentButton.setOnClickListener((view ->
+                JobIntentService.enqueueWork(this, MyJobIntentService.class, 159336, new Intent())
+        ));
+        mMainLayout.jobButton.setOnClickListener((view ->
+                MyJobService.scheduleJob(this)
+        ));
     }
 }
