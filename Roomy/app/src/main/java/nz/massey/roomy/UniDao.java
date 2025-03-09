@@ -15,18 +15,12 @@ public interface UniDao {
     List<Course> getAllCourses();
     @Query("SELECT * FROM lecturer")
     List<Lecturer> getLecturers();
-
     @Insert
     long insert(Lecturer lect);
     @Query("DELETE FROM courseoffering")
     void deleteAllOfferings();
     @Query("DELETE FROM courseoffering WHERE id=:id")
     void deleteOffering(long id);
-    //@Transaction
-    //@Query("SELECT course.* FROM course,courseoffering,lecturer WHERE lecturer.name=:lect AND lecturer_id=lecturer.id AND course_id=course.id AND year=:year")
-    //List<Course> getCourses(String lect, int year);
-    //@Query("SELECT * FROM courseoffering")
-    //List<CourseOffering> getAllOfferings();
     @Query("SELECT * FROM courseoffering where id=:id")
     CourseOffering getOffering(long id);
     @Insert

@@ -46,9 +46,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void showScore() {
         if(mNumMatched==8)
-            mMainLayout.done.setText(getText(R.string.completed) + ":" + mScore);
+            mMainLayout.gameDone.setText(getText(R.string.completed) + ":" + mScore);
         else
-            mMainLayout.done.setText(getText(R.string.score) + ":" + mScore);
+            mMainLayout.gameDone.setText(getText(R.string.score) + ":" + mScore);
     }
 
     private void buttonClick(ImageView b) {

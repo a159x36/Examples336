@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TURNED="TURNED";
     // Number of tiles
     // this must be devisible by 8 for the initialization code to work.
-    private static final int NTILES=32;
+    private static final int NTILES=64;
     // Number of columns in the gridview
     private static final int NCOLS=4;
     // Index of previous tile, -1 means no previous button
@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
             else
                 vh.image.setImageResource(mDrawables[n]);
             // then rotate the rest of the way
-            vh.image.animate().rotationY(to).setStartDelay(0).setInterpolator(mFlipInterpolator).setDuration(200).withEndAction(() -> {
+            vh.image.animate().rotationY(to).setStartDelay(0).setInterpolator(mFlipInterpolator).setDuration(5000).withEndAction(() -> {
                 if(turnback)
                     setTile(v,-1,false,400);
             });

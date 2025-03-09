@@ -22,7 +22,6 @@ public class MainActivity extends Activity {
             R.id.button41, R.id.button42, R.id.button43, R.id.button44,
     };
 
-
     private void showscore() {
         if(mNumMatched==8)
             mDone.setText(getText(R.string.completed) + ":" + mScore);
