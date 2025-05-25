@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Matching Game</string>
+    <string name="sure">Are You Sure?</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="restart">Restart</string>
+</resources>

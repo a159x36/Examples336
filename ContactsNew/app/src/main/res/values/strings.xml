@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Contacts</string>
+    <string name="sort_rev_key" translatable="false">SORT_REV</string>
+    <string name="dial_key" translatable="false">DIAL</string>
+</resources>
