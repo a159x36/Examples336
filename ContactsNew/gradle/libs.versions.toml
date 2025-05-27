@@ -1,15 +1,15 @@
 [versions]
-agp = "8.10.0"
+agp = "8.11.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 activityCompose = "1.10.1"
-lifecycleRuntimeKtx = "2.9.0"
-kotlin = "2.1.20"
+lifecycleRuntimeKtx = "2.9.1"
+kotlin = "2.2.0"
 coreKtx = "1.16.0"
-composeBom = "2025.05.00"
+composeBom = "2025.06.01"
 navigationCompose = "2.9.0"
-datastorePreferences = "1.1.6"
+datastorePreferences = "1.1.7"
 
 
 [libraries]

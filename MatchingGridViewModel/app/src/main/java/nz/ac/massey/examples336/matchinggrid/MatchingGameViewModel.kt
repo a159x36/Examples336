@@ -15,6 +15,7 @@ class MatchingGameViewModel : ViewModel() {
     init {
         reset()
     }
+
     fun updateGameState(newscore: Int, newnummatched: Int, newlasttile: Tile?) {
         _uiState.update { currentState ->
             currentState.copy(
@@ -33,9 +34,9 @@ class MatchingGameViewModel : ViewModel() {
         with(newgame) {
             for (i in 0..<8) {
                 var x: Int
-                (0..<(rows * cols) / 8).forEach {
+                (0..<(ntiles) / 8).forEach {
                     do {
-                        x = (0..(rows*cols-1)).random()
+                        x = (0..(ntiles-1)).random()
                     } while (tiles[x].value != -1)
                     tiles[x].value = i
                 }

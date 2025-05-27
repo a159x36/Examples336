@@ -19,7 +19,6 @@ class CourseViewModel(context:Context) : ViewModel() {
 
     fun getAllLecturers() = mDao.allLecturers()
 
-
     fun getCourseInfo(lect: String) = mDao.getCourseInfo(lect)
 
     fun newOffering(lectid: Long, courseid: Long, year: Int, semester: Int) {

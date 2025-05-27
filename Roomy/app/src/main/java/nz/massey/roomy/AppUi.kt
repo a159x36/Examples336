@@ -1,5 +1,6 @@
 package nz.massey.roomy
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,13 +38,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
+import nz.massey.roomy.theme.ui.AppTheme
 import nz.massey.roomy.theme.ui.AppTypography
 
 
@@ -90,9 +94,10 @@ fun AppBar(modifier:Modifier, navController: NavHostController) {
         }
     )
 }
+@Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddOffering (viewmodel: CourseViewModel, navigateBack: () -> Unit, selected: Int =0) {
+fun AddOffering (viewmodel: CourseViewModel= CourseViewModel(LocalContext.current), navigateBack: () -> Unit={}, selected: Int =0) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -156,9 +161,10 @@ fun AddOffering (viewmodel: CourseViewModel, navigateBack: () -> Unit, selected:
 
 }
 
+@Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditOffering (viewmodel: CourseViewModel, navigateBack: () -> Unit, offering: CourseOffering) {
+fun EditOffering (viewmodel: CourseViewModel= CourseViewModel(LocalContext.current), navigateBack: () -> Unit={}, offering: CourseOffering=CourseOffering(0,0,0,2025,1)) {
     Scaffold(
         topBar = { CenterAlignedTopAppBar(
             title = { Text("Edit Course Offering",) },
@@ -224,17 +230,14 @@ fun EditOffering (viewmodel: CourseViewModel, navigateBack: () -> Unit, offering
 @Serializable
 data class AddOffering(val selected:Int)
 
+@Preview
 @Composable
-fun Nav( ) {
+fun Nav( viewModel: CourseViewModel= CourseViewModel(LocalContext.current)) {
     val navController = rememberNavController()
-    val viewModel = CourseViewModel(LocalContext.current)
+
     NavHost(navController = navController,
         startDestination = "home") {
         composable("home") { Offerings(viewmodel=viewModel, navController=navController) }
-//        composable("addOffering/{selected}", arguments = listOf(navArgument("selected") { type = NavType.IntType })) {
-//            args -> val selected=args.arguments?.getInt("selected")!!
-//            AddOffering(viewmodel =viewModel, navigateBack = { navController.popBackStack(); }, selected = selected) }
-
         composable<AddOffering>{entry->
             val selected=entry.toRoute<AddOffering>().selected
             AddOffering(viewmodel =viewModel, navigateBack = { navController.popBackStack(); }, selected) }
@@ -288,14 +291,14 @@ fun RowScope.TitleText(t:String) {
     Text(t, style = AppTypography.titleMedium, modifier = Modifier.weight(1f))
 }
 
+@Preview
 @Composable
-fun Offerings( modifier: Modifier=Modifier, viewmodel: CourseViewModel =CourseViewModel(LocalContext.current), navController: NavHostController) {
+fun Offerings( modifier: Modifier=Modifier, viewmodel: CourseViewModel =CourseViewModel(LocalContext.current), navController: NavHostController=NavHostController(LocalContext.current)) {
 
     var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
     val lects = viewmodel.getAllLecturers().collectAsState(emptyList()).value
     val selected =
         if (selectedIndex < lects.size) lects[selectedIndex].name.toString() else "Select Lecturer"
-    viewmodel.getCourseInfo(selected)
     val courseInfo = viewmodel.getCourseInfo(selected).collectAsState(emptyList()).value
     val offerings = viewmodel.allOfferings().collectAsState(emptyList()).value
 
@@ -330,9 +333,10 @@ fun Offerings( modifier: Modifier=Modifier, viewmodel: CourseViewModel =CourseVi
     }
 }
 
+@Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddCourse (viewmodel: CourseViewModel, navigateBack: () -> Unit ) {
+fun AddCourse (viewmodel: CourseViewModel= CourseViewModel(LocalContext.current), navigateBack: () -> Unit ={} ) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -381,10 +385,10 @@ fun AddCourse (viewmodel: CourseViewModel, navigateBack: () -> Unit ) {
 
 }
 
-
+@Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddLecturer (viewmodel: CourseViewModel, navigateBack: () -> Unit ) {
+fun AddLecturer (viewmodel: CourseViewModel= CourseViewModel(LocalContext.current), navigateBack: () -> Unit = {}) {
     Scaffold(topBar = { CenterAlignedTopAppBar(title = { Text("Add Lecturer") },
                 navigationIcon = { IconButton(onClick = navigateBack) {
                         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back") } },) },
@@ -411,9 +415,10 @@ fun AddLecturer (viewmodel: CourseViewModel, navigateBack: () -> Unit ) {
         }
     }
 }
+@Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditLecturer (viewmodel: CourseViewModel, navigateBack: () -> Unit, lecturer: Lecturer) {
+fun EditLecturer (viewmodel: CourseViewModel= CourseViewModel(LocalContext.current), navigateBack: () -> Unit={}, lecturer: Lecturer=Lecturer(0,"Martin","44302","3.24")) {
 
     Scaffold(topBar = { CenterAlignedTopAppBar(title = { Text("Edit Lecturer") },
         navigationIcon = { IconButton(onClick = navigateBack) {
@@ -444,9 +449,10 @@ fun EditLecturer (viewmodel: CourseViewModel, navigateBack: () -> Unit, lecturer
         }
     }
 }
+@Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditCourse(viewmodel: CourseViewModel, navigateBack: () -> Unit, course: Course) {
+fun EditCourse(viewmodel: CourseViewModel= CourseViewModel(LocalContext.current), navigateBack: () -> Unit={}, course: Course=Course(0,"159.336","albany")) {
 
     Scaffold(topBar = { CenterAlignedTopAppBar(title = { Text("Edit Course") },
         navigationIcon = { IconButton(onClick = navigateBack) {
@@ -482,9 +488,10 @@ fun Lecturer(lect: Lecturer, modifier: Modifier=Modifier, edit: (Long) -> Unit =
         Text(lect.office.toString(),modifier=modifier.weight(1f))
     }
 }
+@Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Lecturers (viewmodel: CourseViewModel, navController: NavHostController, navigateBack: () -> Unit ) {
+fun Lecturers (viewmodel: CourseViewModel= CourseViewModel(LocalContext.current), navController: NavHostController=NavHostController(LocalContext.current), navigateBack: () -> Unit ={navController.popBackStack()}) {
     val lects = viewmodel.getAllLecturers().collectAsState(emptyList()).value
     Scaffold(topBar = { CenterAlignedTopAppBar(title = { Text("Lecturers") },
 
@@ -523,9 +530,10 @@ fun Course(course: Course, modifier: Modifier=Modifier, edit: () -> Unit = {}) {
         Text(course.location.toString(),modifier=modifier.weight(1f))
     }
 }
+@Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Courses (viewmodel: CourseViewModel, navController: NavHostController, navigateBack: () -> Unit ) {
+fun Courses (viewmodel: CourseViewModel= CourseViewModel(LocalContext.current), navController: NavHostController=NavHostController(LocalContext.current), navigateBack: () -> Unit={navController.popBackStack()} ) {
     val courses = viewmodel.getAllCourses().collectAsState(emptyList()).value
     Scaffold(topBar = { CenterAlignedTopAppBar(title = { Text("Courses") },
                 navigationIcon = { IconButton(onClick = navigateBack) {

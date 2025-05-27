@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "fac5ee401021e97a3a2b2dba7ba5dc17",
+    "identityHash": "92382fc075c2c547fc52dd39abaa1a38",
     "entities": [
       {
         "tableName": "Lecturer",
@@ -72,7 +72,7 @@
       },
       {
         "tableName": "CourseOffering",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `course_id` INTEGER NOT NULL, `lecturer_id` INTEGER NOT NULL, `year` INTEGER NOT NULL, `semester` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `course_id` INTEGER NOT NULL, `lecturer_id` INTEGER NOT NULL, `year` INTEGER NOT NULL, `semester` INTEGER NOT NULL, FOREIGN KEY(`course_id`) REFERENCES `Course`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`lecturer_id`) REFERENCES `Lecturer`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -110,12 +110,56 @@
           "columnNames": [
             "id"
           ]
-        }
+        },
+        "indices": [
+          {
+            "name": "index_CourseOffering_course_id",
+            "unique": false,
+            "columnNames": [
+              "course_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_CourseOffering_course_id` ON `${TABLE_NAME}` (`course_id`)"
+          },
+          {
+            "name": "index_CourseOffering_lecturer_id",
+            "unique": false,
+            "columnNames": [
+              "lecturer_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_CourseOffering_lecturer_id` ON `${TABLE_NAME}` (`lecturer_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Course",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "course_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "Lecturer",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "lecturer_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fac5ee401021e97a3a2b2dba7ba5dc17')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '92382fc075c2c547fc52dd39abaa1a38')"
     ]
   }
 }

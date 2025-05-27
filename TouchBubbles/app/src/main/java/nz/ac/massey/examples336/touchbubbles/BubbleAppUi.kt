@@ -1,6 +1,7 @@
 package nz.ac.massey.examples336.touchbubbles
 
-import android.provider.SyncStateContract.Helpers.update
+import android.annotation.SuppressLint
+import android.app.Application
 import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -9,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Replay
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
@@ -31,7 +32,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
@@ -44,6 +48,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import nz.ac.massey.examples336.touchbubbles.MainActivity
 
 var framenumber = mutableIntStateOf(1)
 
@@ -82,7 +87,7 @@ fun AppBar(showDialog: MutableState<Boolean>?=null, modifier:Modifier, navContro
             ) {
                 DropdownMenuItem(
                     text = { Text(text = "Restart") },
-                    leadingIcon = { Icon(Icons.Filled.Replay, null) },
+                    leadingIcon = { Icon(Icons.Filled.Refresh, null) },
                     onClick = {
                         showDropDownMenu = false
                         showDialog?.value = true
@@ -107,6 +112,21 @@ fun Navigation(viewmodel: SettingsViewModel, bubbles:Bubbles) {
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
+@Preview
+@Composable
+fun Preview() {
+    val context = LocalContext.current
+    lateinit var bubbles:Bubbles
+    val viewmodel = SettingsViewModel(LocalContext.current) {
+        CoroutineScope(Dispatchers.IO).launch {
+            bubbles.init(context)
+        }
+    }
+    bubbles=Bubbles(viewmodel)
+    Navigation(viewmodel, bubbles)
+}
+
 @Composable
 fun BubbleApp(navController: NavHostController,viewmodel: SettingsViewModel,  bubbles:Bubbles, init: () -> Unit = {}) {
     val showDialog = rememberSaveable { mutableStateOf(false) }
@@ -120,7 +140,20 @@ fun BubbleApp(navController: NavHostController,viewmodel: SettingsViewModel,  bu
     }
 }
 
-var doUpdates=false;
+var doUpdates=false
+val redtint:FloatArray=floatArrayOf(
+    1.3f, 0f, 0f, 0f, 0f,
+    0f, 1f, 0f, 0f, 0f,
+    0f, 0f, 1f, 0f, 0f,
+    0f, 0f, 0f, 1f, 0f)
+val greentint:FloatArray=floatArrayOf(
+    1f, 0f, 0f, 0f, 0f,
+    0f, 1.3f, 0f, 0f, 0f,
+    0f, 0f, 1f, 0f, 0f,
+    0f, 0f, 0f, 1f, 0f)
+val redcf = ColorFilter.colorMatrix(ColorMatrix(redtint))
+val greencf = ColorFilter.colorMatrix(ColorMatrix(greentint))
+
 @Composable
 fun Bubbles(modifier: Modifier = Modifier, viewmodel: SettingsViewModel, bubbles:Bubbles) {
     LifecycleResumeEffect(Unit)  {
@@ -141,7 +174,7 @@ fun Bubbles(modifier: Modifier = Modifier, viewmodel: SettingsViewModel, bubbles
                     secs = newtime / 1000
                 }
                 if (newtime - rendertime > 10) {
-                    framenumber.value++
+                    framenumber.intValue++
                     rendertime = newtime
                 }
                 val waittime = (1000 / viewmodel.fps.value) - (newtime - currentTime)
@@ -172,7 +205,9 @@ fun Bubbles(modifier: Modifier = Modifier, viewmodel: SettingsViewModel, bubbles
                 val r = bubbles.getbubbleradius(i)
                 val offset =bubbles.getbubblexy(i)- IntOffset(r,r)
                 val size = IntSize(r * 2, r * 2)
-                if(bubbles.bubble!=null) drawImage(image = bubbles.bubble!!, dstSize = size, dstOffset = offset)
+                if(bubbles.bubble!=null) drawImage(image = bubbles.bubble!!, dstSize = size,
+                    dstOffset = offset,
+                    colorFilter = if (i==bubbles.grabbedBubbleIndex) greencf else redcf)
             }
         }
     }

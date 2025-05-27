@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,7 +27,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mjjohnso.simplematch.ui.theme.AppTheme
@@ -49,6 +52,7 @@ class MainActivity : ComponentActivity() {
     private var tileValues = Array(ROWS * COLS) {0}
     private var scoreState = mutableStateOf("")
     private var turned = Array(ROWS * COLS) {mutableStateOf(false)}
+
     private val drawables= intArrayOf(
       R.drawable.ic_attachment_black_24dp,
       R.drawable.ic_audiotrack_black_24dp,
@@ -59,10 +63,6 @@ class MainActivity : ComponentActivity() {
       R.drawable.ic_spa_black_24dp,
       R.drawable.ic_weekend_black_24dp,
     )
-
-    private fun setButton(i: Int, s: Int) {
-        turned[i].value = s != -1
-    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt(SCORE, score)
@@ -76,8 +76,8 @@ class MainActivity : ComponentActivity() {
     private fun buttonClick(index: Int) {
         if (!turned[index].value) {
             score++
-            setButton(index, tileValues[index])
-            if (lastButtonIndex == -1) {
+            turned[index].value = true
+                if (lastButtonIndex == -1) {
                 lastButtonIndex = index
             } else {
                 if (tileValues[lastButtonIndex] == tileValues[index]) {
@@ -86,7 +86,7 @@ class MainActivity : ComponentActivity() {
                 } else {
                     val bi=lastButtonIndex
                     lastButtonIndex = index
-                    setButton(bi, -1)
+                    turned[bi].value = false
                 }
             }
         }

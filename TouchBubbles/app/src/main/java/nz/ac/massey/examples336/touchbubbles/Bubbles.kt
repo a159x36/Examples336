@@ -2,11 +2,15 @@ package nz.ac.massey.examples336.touchbubbles
 
 import android.content.Context
 import android.graphics.BitmapFactory
-import androidx.compose.ui.geometry.Offset
+import android.util.Log.i
+import android.util.Log.v
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.IntOffset
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.nio.FloatBuffer
 import kotlin.math.sqrt
 
 
@@ -26,7 +30,7 @@ class Bubbles(viewModel: SettingsViewModel) {
     var csize = Size(1080f,1440f)
     var bubble:ImageBitmap?=null
 
-    private var grabbedBubbleIndex=-1
+    var grabbedBubbleIndex=-1
 
     private val viewmodel=viewModel
 
@@ -157,7 +161,7 @@ class Bubbles(viewModel: SettingsViewModel) {
         return bubbleData[i+CR].toInt()
     }
 
-    suspend fun init(c:Context) {
+    fun init(c:Context) {
         bubble =BitmapFactory.decodeResource(c.resources,R.drawable.bubble).asImageBitmap()
         bubbleData = FloatArray(viewmodel.nbubbles.value*6)
         val nsmall=viewmodel.nbubbles.value-viewmodel.nlarge.value
@@ -177,6 +181,6 @@ class Bubbles(viewModel: SettingsViewModel) {
         }
     }
 
-    external fun nativeUpdate(nb:Int, touched:Int, width:Int,height:Int,dt:Float,gx:Float,gy:Float,bubbles:FloatArray, rigidity:Float, dampening:Float, compress:Boolean);
+    external fun nativeUpdate(nb:Int, touched:Int, width:Int,height:Int,dt:Float,gx:Float,gy:Float,bubbles:FloatArray, rigidity:Float, dampening:Float, compress:Boolean)
 
 }

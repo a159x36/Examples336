@@ -1,6 +1,0 @@
-for i in [A-Z]*
-do cd $i
-echo "Compiling $i" 
-ANDROID_HOME=/opt/adt-bundle-linux/sdk/ ./gradlew assembledebug
-cd ..
-done

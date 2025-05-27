@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="line_width_default">10</integer>
+    <integer name="window_default">10</integer>
+</resources>

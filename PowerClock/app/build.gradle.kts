@@ -7,11 +7,11 @@ plugins {
 
 android {
     namespace="com.android.dzclock"
-    compileSdk=35
+    compileSdk=36
     defaultConfig {
         applicationId= "nz.massey.powerclock"
         minSdk=26
-        targetSdk=33
+        targetSdk=36
         versionCode=1
         versionName="1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -29,8 +29,16 @@ android {
         compose=true // Enable Jetpack Compose support
         viewBinding=true
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
     }
 
 }
@@ -52,7 +60,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(libs.androidx.material.icons.extended)
+//    implementation(libs.androidx.material.icons.extended)
     debugImplementation(libs.ui.tooling)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.appcompat)

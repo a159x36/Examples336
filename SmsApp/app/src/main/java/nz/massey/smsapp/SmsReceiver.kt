@@ -7,39 +7,24 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
-import android.telephony.SmsMessage
+import android.provider.Telephony.Sms.Intents.getMessagesFromIntent
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 
 private const val TAG = "SMS Receiver"
-private const val FORMAT_TYPE: String = "format"
-private const val PDU_TYPE: String = "pdus"
 
 class SmsReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-
-        val msgs: Array<SmsMessage?>
-        var strMessage = ""
-        val format = intent.getStringExtra(FORMAT_TYPE)
-        // Retrieve the SMS message received.
-        val pdus:Array<ByteArray>? = (if(Build.VERSION.SDK_INT>=33) {
-            intent.getSerializableExtra(PDU_TYPE, Array<ByteArray>::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            val extra=intent.getSerializableExtra(PDU_TYPE);
-            extra as? Array<ByteArray>
-        })
-
-        if (pdus != null) {
-            // Fill the msgs array.
-            msgs = arrayOfNulls(pdus.size)
-            for (i in msgs.indices) {
-                // Check Android version and use appropriate createFromPdu.
-                msgs[i] = SmsMessage.createFromPdu(pdus[i], format)
+        val action = intent.action
+        if (action == android.provider.Telephony.Sms.Intents
+            .SMS_RECEIVED_ACTION) {
+            val messages = getMessagesFromIntent(intent)
+            for (msg in messages) {
                 // Build the message to show.
-                strMessage += "SMS from " + msgs[i]?.getOriginatingAddress()
-                strMessage += " :" + msgs[i]?.getMessageBody() + "\n"
+                val strMessage =
+                    "SMS from ${msg.originatingAddress} " +
+                    ": ${msg.messageBody}\n"
                 // Log and display the SMS message.
                 Log.d(TAG, "onReceive: $strMessage")
                 Toast.makeText(context, strMessage, Toast.LENGTH_LONG).show()

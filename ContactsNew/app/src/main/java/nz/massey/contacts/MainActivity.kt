@@ -27,7 +27,6 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,15 +35,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import nz.massey.contacts.theme.ui.AppTypography
-import androidx.core.net.toUri
 
 const val TAG="Contacts"
 
@@ -56,7 +54,7 @@ class MainActivity : ComponentActivity() {
 
 
     @Composable
-    fun SettingsSwitch(modifier:Modifier=Modifier, heading:String="Example Switch", description:String="Switch me", state: State<Boolean>, onChange:(Boolean)->Unit={}) {
+    fun SettingsSwitch(modifier:Modifier=Modifier, heading:String, description:String, state: Boolean, onChange:(Boolean)->Unit={}) {
         Row (horizontalArrangement = Arrangement.SpaceBetween, modifier = modifier.padding(8.dp)){
             Column(modifier = modifier.padding(8.dp).weight(0.9f)) {
                 Text(text = heading, style = AppTypography.titleMedium)
@@ -64,7 +62,7 @@ class MainActivity : ComponentActivity() {
             }
             Switch(
                 modifier = Modifier.fillMaxWidth().align(CenterVertically).weight(0.2f).padding(8.dp),
-                checked = state.value,
+                checked = state,
                 onCheckedChange = {
                     onChange(it)
                 })
@@ -74,6 +72,10 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun AppBar( modifier:Modifier) {
         var showDropDownMenu by remember { mutableStateOf(false) }
+        val prefs=dataStore.data.collectAsState(null)
+        val sortRev=prefs.value?.get(ContactViewModel.PreferenceKeys.SORT_REV)?:false
+        val dial=prefs.value?.get(ContactViewModel.PreferenceKeys.DIAL)?:false
+
         TopAppBar(
             modifier = modifier,
             title = { Text(text = "Contacts") },
@@ -90,17 +92,16 @@ class MainActivity : ComponentActivity() {
                             SettingsSwitch(
                                 heading = "Dial",
                                 description = "Dial Directly?",
-                                state = viewmodel.dial.collectAsStateWithLifecycle(),
-                            ) { viewmodel.setDial(it) }
+                                state = dial?:false,
+                            ) { viewmodel.updateDial(it) }
                         }, onClick = {})
                 DropdownMenuItem(
                         text= {
                             SettingsSwitch(
                                 heading = "Sort Reverse",
                                 description = "Sort contacts in reverse order?",
-                                state = viewmodel.sortRev.collectAsStateWithLifecycle(),
-                            ) { viewmodel.setSortRev(it)
-                            }
+                                state = sortRev?:false,
+                            ) { viewmodel.updateSortRev(it) }
                         }, onClick = {})}
 
             }
@@ -139,13 +140,13 @@ class MainActivity : ComponentActivity() {
         // get the first phone number
         phones.moveToFirst()
         val index = phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
-        val phoneNumber =
-            phones.getString(index)
+        val phoneNumber = phones.getString(index)
         phones.close()
+        //val prefs=dataStore.data.collect()
         // call the number
         startActivity(
             Intent(
-                if(viewmodel.dial.value) Intent.ACTION_CALL else Intent.ACTION_DIAL,
+                if(viewmodel.dial) Intent.ACTION_CALL else Intent.ACTION_DIAL,
                 ("tel:$phoneNumber").toUri())
         )
     }
@@ -153,9 +154,9 @@ class MainActivity : ComponentActivity() {
     fun init() {
         CoroutineScope(Dispatchers.IO).launch {
             // get preference to see if contacts are displayed in reverse order
-            val sortRev = viewmodel.sortRev.value
+            val sortRev = viewmodel.sortRev
             // get contacts with a phone number
-            var mCursor = contentResolver.query(
+            val cursor = contentResolver.query(
                 ContactsContract.Contacts.CONTENT_URI,
                 null,
                 ContactsContract.Contacts.HAS_PHONE_NUMBER,
@@ -164,22 +165,22 @@ class MainActivity : ComponentActivity() {
             )
 
             val contacts = mutableListOf<Contact>()
-
-            if (mCursor != null) {
-                mCursor.moveToFirst()
-                do {
-                    var index = mCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
-                    var name = ""
-                    var id = 0
-                    if (index >= 0) name = mCursor.getString(index)
-                    index = mCursor.getColumnIndex(ContactsContract.Contacts._ID)
-                    if (index >= 0) id = mCursor.getInt(index)
-                    contacts.add(Contact(id, name))
-                    mCursor.moveToNext()
-                } while (!mCursor.isAfterLast)
+            if (cursor != null) {
+                with(cursor) {
+                    val nameindex = getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
+                    val idindex = getColumnIndex(ContactsContract.Contacts._ID)
+                    if (nameindex < 0 || idindex < 0 ) return@launch
+                    if(!moveToFirst()) return@launch
+                    do {
+                        val name = getString(nameindex)
+                        val id = getInt(idindex)
+                        contacts.add(Contact(id, name))
+                        moveToNext()
+                    } while (!isAfterLast)
+                    close()
+                }
             }
             viewmodel.setContacts(contacts)
-            mCursor?.close()
         }
     }
 
@@ -192,13 +193,18 @@ class MainActivity : ComponentActivity() {
         val canReadContacts=checkSelfPermission(android.Manifest.permission.READ_CONTACTS)==PackageManager.PERMISSION_GRANTED
         val canCall=checkSelfPermission(android.Manifest.permission.CALL_PHONE)==PackageManager.PERMISSION_GRANTED
         val requestPermissionLauncher = registerForActivityResult(RequestMultiplePermissions()) {
-                 isGranted: Map<String,Boolean> -> if(isGranted[android.Manifest.permission.READ_CONTACTS] == true)
-                     init()
+                isGranted: Map<String,Boolean> -> if(isGranted[android.Manifest.permission.READ_CONTACTS] == true)
+            init()
         }
         // ask for permissions
         if (!canReadContacts || !canCall)
             requestPermissionLauncher.launch(arrayOf(android.Manifest.permission.READ_CONTACTS ,
                 android.Manifest.permission.CALL_PHONE))
-        else init()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(checkSelfPermission(android.Manifest.permission.READ_CONTACTS)==PackageManager.PERMISSION_GRANTED)
+            init()
     }
 }

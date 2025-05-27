@@ -44,6 +44,8 @@ extern "C" JNIEXPORT void JNICALL Java_nz_ac_massey_examples336_touchbubbles_Bub
                 bubble[X] = width - bubble[CR];
                 bubble[VX] = -bubble[VX];
             }
+            bubble[VX] += dt * gx * 10;
+            bubble[VY] += dt * gy * 10;
         }
     }
     float x,y,r,x1,y1,r1,d,d1;

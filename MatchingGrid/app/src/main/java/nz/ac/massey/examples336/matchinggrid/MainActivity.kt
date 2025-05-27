@@ -17,7 +17,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Replay
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
@@ -85,14 +85,6 @@ class MainActivity : ComponentActivity() {
       R.drawable.ic_weekend_black_24dp,
     )
 
-    private suspend fun setTile(t:Tile, s: Int, turnback: Boolean) {
-        t.showing=(!turnback && s!=-1)
-        if (turnback) {
-            delay(400)
-            setTile(t,-1,false)
-        }
-    }
-
 
     @Composable
     fun SureDialog(onConfirmation: () -> Unit, show: MutableState<Boolean>) {
@@ -126,25 +118,26 @@ class MainActivity : ComponentActivity() {
     private fun buttonClick(tile:Tile) {
         if (!tile.turned && !tile.showing) {
             score++
-
             if (lastTile == null) {
                 lastTile = tile
                 tile.showing = true
             } else {
-                val lt=lastTile
-                if (lastTile?.value == tile.value) {
-                    tile.turned=true
-                    lt!!.turned=true
-                    numMatched++
-                    lastTile = null
-                } else {
-                    val lt=lastTile!!
-                    tile.showing=true
-                    CoroutineScope(Dispatchers.Main).launch {
-                        turnback(tile)
+                lastTile?.let {
+                    if (it.value == tile.value) {
+                        tile.turned = true
+                        it.turned = true
+                        numMatched++
+                        lastTile = null
+                    } else {
+                        tile.showing = true
+                        CoroutineScope(Dispatchers.IO).launch {
+                            turnback(it)
+                        }
+                        CoroutineScope(Dispatchers.IO).launch {
+                            turnback(tile)
+                        }
+                        lastTile = null
                     }
-                    lt.showing=false
-                    lastTile=null
                 }
             }
         }
@@ -182,10 +175,9 @@ class MainActivity : ComponentActivity() {
     }
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun AppBar(showDialog: MutableState<Boolean>, modifier:Modifier) {
+    fun AppBar(showDialog: MutableState<Boolean>) {
         var showDropDownMenu by remember { mutableStateOf(false) }
         TopAppBar(
-            modifier = modifier,
             title = { Text(text = scoreState) },
             actions = {
                 IconButton(onClick = { showDropDownMenu = true }) {
@@ -194,11 +186,10 @@ class MainActivity : ComponentActivity() {
                 DropdownMenu(
                     expanded = showDropDownMenu,
                     onDismissRequest = { showDropDownMenu = false }
-                    // offset = DpOffset((-102).dp, (-64).dp),
                 ) {
                     DropdownMenuItem(
                         text = { Text(text = "Restart") },
-                        leadingIcon = { Icon(Icons.Filled.Replay, null) },
+                        leadingIcon = { Icon(Icons.Filled.Refresh, null) },
                         onClick = {
                             showDropDownMenu = false
                             showDialog.value = true
@@ -223,7 +214,7 @@ class MainActivity : ComponentActivity() {
             }
         }, showDialog)
         Scaffold(
-            topBar = { AppBar(showDialog, Modifier) },
+            topBar = { AppBar(showDialog) },
         ) { innerPadding ->
             LazyVerticalGrid( columns = GridCells.Fixed(COLS),
                 modifier = Modifier.padding(innerPadding)
@@ -234,9 +225,10 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    @Preview
+    @Preview (showSystemUi = true)
     @Composable
     fun ComposablePreview() {
+        init()
         AppTheme {
             MatchGame()
         }

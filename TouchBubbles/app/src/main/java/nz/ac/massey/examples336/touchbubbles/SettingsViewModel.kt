@@ -2,7 +2,9 @@ package nz.ac.massey.examples336.touchbubbles
 
 import android.app.Application
 import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.core.DataStore
+import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
@@ -19,7 +21,7 @@ import kotlinx.coroutines.launch
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 
-class SettingsViewModel(private val app: Application, prefschanged: () -> Unit)  : ViewModel() {
+class SettingsViewModel(private val ctxt: Context, prefschanged: () -> Unit)  : ViewModel() {
     private val _nlarge = MutableStateFlow(0)
     private val _nbubbles = MutableStateFlow(0)
     private val _fps = MutableStateFlow(0)
@@ -48,7 +50,7 @@ class SettingsViewModel(private val app: Application, prefschanged: () -> Unit) 
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            app.dataStore.data.collect {
+            ctxt.dataStore.data.collect {
                 preferences ->
                 _nbubbles.value=preferences[PreferenceKeys.NBUBBLES]?:200
                 _nlarge.value=preferences[PreferenceKeys.NLARGE]?:1
@@ -80,7 +82,7 @@ class SettingsViewModel(private val app: Application, prefschanged: () -> Unit) 
 
     fun <T>setPref(key: Preferences.Key<T>, value: T) {
         CoroutineScope(Dispatchers.IO).launch {
-            app.dataStore.edit { settings ->
+            ctxt.dataStore.edit { settings ->
                 settings[key] = value
             }
         }

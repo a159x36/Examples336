@@ -1,0 +1,23 @@
+<resources>
+    <string-array name="unit_entries">
+        <item>km/h</item>
+        <item>knots</item>
+        <item>mph</item>
+    </string-array>
+    <string-array name="distance_unit_entries">
+        <item>km</item>
+        <item>nm</item>
+        <item>miles</item>
+    </string-array>
+    <string-array name="map_type_entries" >
+        <item>Normal</item>
+        <item>Satellite</item>
+        <item>Hybrid</item>
+        <item>Terrain</item>
+        <item>None</item>
+    </string-array>
+    <array name="range_array" >
+        <item>0.0</item>
+        <item>100.0</item>
+    </array>
+</resources>

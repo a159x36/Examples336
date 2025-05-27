@@ -17,7 +17,7 @@ class MyFgService : Service() {
     private val handler = Handler(Looper.getMainLooper())
 
     fun work() {
-        Log.i(TAG, "I'm a Foreground Service, the time is:" + System.currentTimeMillis() / 1000)
+        Log.i(TAG, "I'm a Foreground Service, the time is: ${System.currentTimeMillis()/1000}")
         handler.postDelayed(::work, 5000)
     }
 

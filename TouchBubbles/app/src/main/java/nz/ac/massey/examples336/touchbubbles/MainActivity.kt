@@ -6,6 +6,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import kotlinx.coroutines.CoroutineScope
@@ -50,14 +51,18 @@ class MainActivity : ComponentActivity(),SensorEventListener {
                 Navigation(viewmodel, bubbles)
             }
         }
-        sensormanager=getSystemService(SENSOR_SERVICE) as SensorManager
+        val sensormanager=getSystemService(SENSOR_SERVICE) as SensorManager
+        val sensors=sensormanager?.getSensorList(Sensor.TYPE_ALL)
+        for(sensor in sensors!!)
+            Log.i(TAG,"Sensor: ${sensor.name}, type: ${sensor.type}")
+
         accelerometer= sensormanager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 
 
-    override fun onSensorChanged(p0: SensorEvent?) {
-        bubbles.mGravityX=-p0!!.values[0]
+    override fun onSensorChanged(p0: SensorEvent) {
+        bubbles.mGravityX=-p0.values[0]
         bubbles.mGravityY= p0.values[1]
     }
 

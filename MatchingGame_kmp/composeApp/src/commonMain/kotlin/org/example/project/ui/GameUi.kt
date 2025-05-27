@@ -102,14 +102,12 @@ fun TurningButton( viewModel: MatchingGameViewModel, tile:Tile, modifier: Modifi
     val turned=tile.turned.collectAsState().value
     val angle by animateFloatAsState(
         targetValue = if (shown || turned) 0f else 180f,
-        animationSpec =  //tween(durationMillis = 1000),
-        spring( stiffness = Spring.StiffnessVeryLow,
+        animationSpec = spring( stiffness = Spring.StiffnessVeryLow,
             dampingRatio = DampingRatioMediumBouncy),
     )
-    val uiState by viewModel.uiState.collectAsState()
     Button(
         shape = RoundedCornerShape(4.dp),
-        onClick = { tile.buttonClick(uiState,viewModel) },
+        onClick = { tile.buttonClick(viewModel) },
         modifier = modifier
             .fillMaxSize()
             .padding(4.dp)

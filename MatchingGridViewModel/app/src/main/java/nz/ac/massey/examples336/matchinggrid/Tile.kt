@@ -26,7 +26,8 @@ class Tile {
         value=0
     }
 
-    fun buttonClick(uiState: GameUiState, viewmodel: MatchingGameViewModel) {
+    fun buttonClick(viewmodel: MatchingGameViewModel) {
+        val uiState = viewmodel.uiState.value
         var newlt = uiState.lastTile
         var newscore = uiState.score
         var newnummatched = uiState.numMatched
@@ -44,8 +45,12 @@ class Tile {
                         newlt = null
                     } else {
                         _shown.value = true
-                        CoroutineScope(Dispatchers.Default).launch { turnback()
-                            it._shown.value = false
+
+                        CoroutineScope(Dispatchers.Default).launch {
+                            turnback()
+                        }
+                        CoroutineScope(Dispatchers.Default).launch {
+                            it.turnback()
                         }
                         newlt = null
                     }

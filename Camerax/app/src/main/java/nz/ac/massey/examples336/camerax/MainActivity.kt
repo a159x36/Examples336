@@ -1,12 +1,13 @@
 package nz.ac.massey.examples336.camerax
 
-import android.content.Context
-import android.os.Build
-import android.os.Bundle
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
@@ -14,13 +15,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.camera.core.CameraControl
-import androidx.camera.core.CameraSelector
+import androidx.camera.compose.CameraXViewfinder
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.lifecycle.awaitInstance
-import androidx.camera.view.PreviewView
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -34,27 +31,24 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import nz.ac.massey.examples336.camerax.ui.theme.CameraxTheme
-import java.io.File
 import java.text.SimpleDateFormat
 
 fun openGallery(context:Context) {
@@ -69,22 +63,23 @@ fun openGallery(context:Context) {
     )
     if(imageCursor == null) return
     imageCursor.moveToFirst()
-    var photoId = 0L;
-    photoId = imageCursor.getLong(0);
-    imageCursor.close();
+    val photoId = imageCursor.getLong(0)
+    imageCursor.close()
 
-    Log.i(TAG, "id=" + photoId);
-    val intent = Intent(Intent.ACTION_VIEW);
+    Log.i(TAG, "id=" + photoId)
+    val intent = Intent(Intent.ACTION_VIEW)
     intent.setDataAndType(
         Uri.withAppendedPath(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             "" + photoId
         ), "image/jpeg"
-    );
-    context.startActivity(intent);
+    )
+    context.startActivity(intent)
 
 }
+
 const val TAG = "CameraX"
+@SuppressLint("SimpleDateFormat")
 fun takePhoto(context:Context, imageCapture: ImageCapture) {
     // Create time stamped name and MediaStore entry.
    val name = "IMG_"+SimpleDateFormat("yyyyMMdd_HHmmss")
@@ -153,17 +148,13 @@ fun Modifier.bounceClick() = composed {
 }
 
 @Composable
-fun CameraApp(modifier: Modifier = Modifier) {
-    var cameraSelection by remember { mutableIntStateOf(CameraSelector.LENS_FACING_BACK) }
-
-    val imageCapture = remember { ImageCapture.Builder().build() }
+fun CameraApp(modifier: Modifier = Modifier, viewModel: CameraViewModel=viewModel ()) {
 
     val localContext = LocalContext.current
 
-    Box {
+    Box(modifier=modifier.fillMaxSize()) {
         CameraPreview(
-            lensFacing = cameraSelection,
-            imageCapture = imageCapture
+            modifier,viewModel
         )
         Box(modifier=modifier.fillMaxSize()) {
             Image(
@@ -171,7 +162,7 @@ fun CameraApp(modifier: Modifier = Modifier) {
                     .padding(48.dp).size(64.dp)
                     .bounceClick()
                     .clickable(enabled = true, onClick = {
-                        takePhoto(localContext, imageCapture)
+                        takePhoto(localContext, viewModel.imageCapture)
                     }),
                 painter = painterResource(id = R.drawable.ic_radio_button_checked_black_24dp),
                 contentDescription = ""
@@ -186,7 +177,7 @@ fun CameraApp(modifier: Modifier = Modifier) {
             Image(
                 modifier = Modifier.align(Alignment.BottomEnd)
                     .padding(bottom = 48.dp, end = 32.dp).size(64.dp)
-                    .clickable(enabled = true, onClick = { cameraSelection = 1 - cameraSelection }),
+                    .clickable(enabled = true, onClick = { viewModel.cameraSelection.intValue = 1 - viewModel.cameraSelection.intValue }),
                 painter = painterResource(id = R.drawable.flip_camera_android_24px),
                 contentDescription = ""
             )
@@ -194,60 +185,42 @@ fun CameraApp(modifier: Modifier = Modifier) {
     }
 }
 
+
 @Composable
 fun CameraPreview(
     modifier: Modifier = Modifier,
-    lensFacing: Int,
-    imageCapture: ImageCapture
+    viewModel: CameraViewModel
 ) {
-    val preview = remember { androidx.camera.core.Preview.Builder().build() }
 
-    var cameraProvider by remember { mutableStateOf<ProcessCameraProvider?>(null) }
-    var cameraControl by remember { mutableStateOf<CameraControl?>(null) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val context = LocalContext.current
 
-    val localContext = LocalContext.current
 
-    fun rebindCameraProvider() {
-        if (cameraProvider != null) {
-            val cameraSelector = CameraSelector.Builder()
-                .requireLensFacing(lensFacing)
-                .build()
-            cameraProvider!!.unbindAll()
-            val camera = cameraProvider!!.bindToLifecycle(
-                localContext as LifecycleOwner,
-                cameraSelector,
-                preview, imageCapture
-            )
-            cameraControl = camera.cameraControl
-        }
+    LaunchedEffect(lifecycleOwner) {
+        viewModel.bindToCamera(context.applicationContext, lifecycleOwner)
     }
 
-    LaunchedEffect(Unit) {
-        cameraProvider = ProcessCameraProvider.awaitInstance(localContext)
-        rebindCameraProvider()
+
+    LaunchedEffect(viewModel.cameraSelection.intValue) {
+        viewModel.bindToCamera(context.applicationContext, lifecycleOwner)
     }
 
-    LaunchedEffect(lensFacing) {
-        rebindCameraProvider()
-    }
+    val surfaceRequest=viewModel.surfaceRequest.collectAsState()
 
-    AndroidView(
-        modifier = modifier.fillMaxSize(),
-        factory = { context ->
-            PreviewView(context).also {
-                preview.surfaceProvider = it.surfaceProvider
-                rebindCameraProvider()
-            }
-        }
-    )
+    surfaceRequest.value?.let {
+        CameraXViewfinder(
+            surfaceRequest = it,
+            modifier = modifier.fillMaxSize()
+        )
+    }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = false)
 @Composable
 fun CameraScreenPreview() {
         CameraApp()
 }
- 
+val viewModel = CameraViewModel()
 class MainActivity : ComponentActivity() {
     private val REQUIRED_PERMISSIONS =
             mutableListOf (
@@ -258,6 +231,7 @@ class MainActivity : ComponentActivity() {
                     add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 }
             }.toTypedArray()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -282,13 +256,12 @@ class MainActivity : ComponentActivity() {
                     setContent {
                         CameraxTheme {
                             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                                CameraApp(modifier=Modifier.padding(innerPadding))
+                                CameraApp(modifier=Modifier.padding(innerPadding),viewModel)
                             }
                         }
                     }
                 }
             }
         activityResultLauncher.launch(REQUIRED_PERMISSIONS)
-
     }
 }

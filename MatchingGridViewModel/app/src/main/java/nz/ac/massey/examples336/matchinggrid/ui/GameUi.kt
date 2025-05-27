@@ -1,5 +1,6 @@
 package nz.ac.massey.examples336.matchinggrid.ui
 
+import android.R.attr.rotationY
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -14,7 +15,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Replay
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -23,6 +24,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextFieldDefaults.contentPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -63,6 +65,8 @@ val drawables= intArrayOf(
     R.drawable.ic_weekend_black_24dp,
 )
 
+const val TAG = "MatchingGame"
+
 @Composable
 fun SureDialog(modifier: Modifier = Modifier, onConfirmation: () -> Unit, show: MutableState<Boolean>) {
     if (show.value) {
@@ -92,10 +96,9 @@ fun TurningButton( viewModel: MatchingGameViewModel, tile:Tile, modifier: Modifi
         //spring( stiffness = StiffnessMediumLow,
         //    dampingRatio = DampingRatioMediumBouncy),
     )
-    val uiState by viewModel.uiState.collectAsState()
     Button(
         shape = RoundedCornerShape(4.dp),
-        onClick = { tile.buttonClick(uiState,viewModel) },
+        onClick = { tile.buttonClick(/*uiState,*/viewModel) },
         modifier = modifier
             .fillMaxSize()
             .padding(4.dp)
@@ -122,10 +125,8 @@ fun TurningButton( viewModel: MatchingGameViewModel, tile:Tile, modifier: Modifi
 fun AppBar(viewModel:MatchingGameViewModel, showDialog: MutableState<Boolean>, modifier:Modifier) {
     var showDropDownMenu by remember { mutableStateOf(false) }
     val uiState by viewModel.uiState.collectAsState()
-    val scorestring=if (uiState.numMatched == ((uiState.rows * uiState.cols) / 2) ) "Complete:${uiState.score}"
+    val scorestring=if (uiState.numMatched == ((uiState.ntiles) / 2) ) "Complete:${uiState.score}"
     else "Score:${uiState.numMatched}/${uiState.score}"
-
-
 
     TopAppBar(
         modifier = modifier,
@@ -141,7 +142,7 @@ fun AppBar(viewModel:MatchingGameViewModel, showDialog: MutableState<Boolean>, m
             ) {
                 DropdownMenuItem(
                     text = { Text(text = stringResource(R.string.restart)) },
-                    leadingIcon = { Icon(Icons.Filled.Replay, null) },
+                    leadingIcon = { Icon(Icons.Filled.Refresh, null) },
                     onClick = {
                         showDropDownMenu = false
                         showDialog.value = true
@@ -170,8 +171,7 @@ fun MatchGame( modifier: Modifier = Modifier, viewModel: MatchingGameViewModel=v
         topBar = { AppBar(viewModel, showDialog, Modifier) },
     ) { innerPadding ->
         LazyVerticalGrid( columns = GridCells.Fixed(uiState.cols),
-            modifier = Modifier.padding(innerPadding)
-        ) {
+            modifier = Modifier.padding(innerPadding)) {
             items(uiState.tiles.size) { index ->
                 TurningButton(viewModel, uiState.tiles[index], modifier.height(ROWHEIGHT))
             }
