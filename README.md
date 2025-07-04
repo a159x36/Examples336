@@ -1,7 +1,6 @@
 # Examples for 159336 at Massey University
 ## Greetings
-Composable functions demonstrating the following: modifiers, Text, Row, Column, Arrangement, Weights, Alignment, onClick, Card, Button, State, StateFlow, remember,  OutlinedTextField, AnimatedVisibility, Typography, animateFloatAsStat, graphicsLayer, IconButton, Icon, Toast, Scaffold, SnackbarHost, AlertDialog, LazyColumn, LazyVerticalGrid, pointerInput, transformable, HorizontalPager, drawBehind, drawCircle, drawText
-Canvas drawing exmaples
+Composable functions demonstrating the following: modifiers, Text, Row, Column, Arrangement, Weights, Alignment, onClick, Card, Button, State, StateFlow, remember,  OutlinedTextField, AnimatedVisibility, Typography, animateFloatAsStat, graphicsLayer, IconButton, Icon, Toast, Scaffold, SnackbarHost, AlertDialog, LazyColumn, LazyVerticalGrid, pointerInput, transformable, HorizontalPager, drawBehind, drawCircle, drawText and Canvas drawing examples
 ## Modifiers
 Composable functions demonstrating arrangement, alignment and weight
 ## SimpleMatchNumUnfinished
