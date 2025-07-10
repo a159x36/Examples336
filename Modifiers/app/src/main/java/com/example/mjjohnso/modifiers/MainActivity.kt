@@ -41,15 +41,15 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun LabelRow(t: String) {
-        Row {Text(t, fontSize = 12.sp)}
+    fun Label(t: String) {
+        Text(t, fontSize = 15.sp, modifier = Modifier.padding(2.dp))
     }
 
     @Composable
     fun Modifiers(modifier: Modifier = Modifier) {
         Column(modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
             val modifier=Modifier.fillMaxWidth().background(Color.Yellow)
-            LabelRow("modifier.fillMaxWidth(),\nhorizontalArrangement = (Arrangement.SpaceEvenly)")
+            Label("modifier.fillMaxWidth(),\nhorizontalArrangement = (Arrangement.SpaceEvenly)")
             Row(
                 modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = (Arrangement.SpaceEvenly)
@@ -59,7 +59,7 @@ class MainActivity : ComponentActivity() {
                 TextItem("Text3")
                 TextItem("Text4")
             }
-            LabelRow("modifier.fillMaxWidth(),\nhorizontalArrangement = (Arrangement.SpaceAround)")
+            Label("modifier.fillMaxWidth(),\nhorizontalArrangement = (Arrangement.SpaceAround)")
             Row(
                 modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = (Arrangement.SpaceAround)
@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
                 TextItem("Text3")
                 TextItem("Text4")
             }
-            LabelRow("modifier.fillMaxWidth(),\nhorizontalArrangement = (Arrangement.SpaceBetween)")
+            Label("modifier.fillMaxWidth(),\nhorizontalArrangement = (Arrangement.SpaceBetween)")
             Row(
                 modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = (Arrangement.SpaceBetween)
@@ -79,7 +79,7 @@ class MainActivity : ComponentActivity() {
                 TextItem("Text3")
                 TextItem("Text4")
             }
-            LabelRow("modifier.align(Alignment.Start)")
+            Label("modifier.align(Alignment.Start)")
             Row(
                 modifier = modifier.align(Alignment.Start)
             ) {
@@ -88,7 +88,7 @@ class MainActivity : ComponentActivity() {
                 TextItem("Text3")
                 TextItem("Text4")
             }
-            LabelRow("modifier.align(Alignment.End)")
+            Label("modifier.align(Alignment.End)")
             Row(
                 modifier = modifier.align(Alignment.End),
             ) {
@@ -97,7 +97,7 @@ class MainActivity : ComponentActivity() {
                 TextItem("Text3")
                 TextItem("Text4")
             }
-            LabelRow("modifier.align(Alignment.CenterHorizontally)")
+            Label("modifier.align(Alignment.CenterHorizontally)")
             Row(
                 modifier = modifier.align(Alignment.CenterHorizontally),
             ) {
@@ -106,7 +106,7 @@ class MainActivity : ComponentActivity() {
                 TextItem("Text3")
                 TextItem("Text4")
             }
-            LabelRow("Modifier.height(IntrinsicSize.Min)\nModifier.weight(1f)")
+            Label("Modifier.height(IntrinsicSize.Min)\nModifier.weight(1f)")
             Row(
                 modifier = modifier.fillMaxWidth().height(IntrinsicSize.Min)
             ) {
@@ -115,7 +115,7 @@ class MainActivity : ComponentActivity() {
                 TextItem("Text3", Modifier.weight(1f))
                 TextItem("Text4", Modifier.weight(1f))
             }
-            LabelRow("Modifier.height(IntrinsicSize.Min)\nModifier.weight(1f)\nModifier.weight(1f)\nModifier.weight(1.5f)\nModifier.weight(2f)")
+            Label("Modifier.height(IntrinsicSize.Min)\nModifier.weight(1f)\nModifier.weight(1f)\nModifier.weight(1.5f)\nModifier.weight(2f)")
             Row(
                 modifier = modifier.height(IntrinsicSize.Min)
             ) {

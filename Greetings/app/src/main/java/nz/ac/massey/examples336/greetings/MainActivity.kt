@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -157,13 +158,13 @@ fun Greeting2(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun Greeting3( modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
+    Column(modifier = modifier.width(200.dp)) {
         Text("Hello 159336",Modifier.align(Alignment.CenterHorizontally))
         Text("More Text")
         Row {
-            Text("1",Modifier.weight(1f))
-            Text("2",Modifier.weight(1f))
-            Text("3",Modifier.weight(1f))
+            Text("Text 1 ")
+            Text("Text 2 ")
+            Text("Text 3 ")
         }
     }
 }
@@ -175,11 +176,11 @@ fun Greeting4(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally) {
         Text("Hello 159336",modifier.align(Alignment.Start))
         Text("More Text")
-        Row(modifier = modifier.fillMaxHeight(),
+        Row(modifier = modifier.height(64.dp),
             verticalAlignment = Alignment.CenterVertically) {
-            Text("1",modifier.align(Alignment.Top))
-            Text("2")
-            Text("3",modifier.align(Alignment.Bottom))
+            Text("1",modifier.width(64.dp).align(Alignment.Top))
+            Text("2",modifier.width(64.dp))
+            Text("3",modifier.width(64.dp).align(Alignment.Bottom))
         }
     }
 }
