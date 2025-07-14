@@ -1,6 +1,5 @@
 package nz.massey.roomy
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,14 +39,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
-import nz.massey.roomy.theme.ui.AppTheme
 import nz.massey.roomy.theme.ui.AppTypography
 
 
@@ -120,28 +117,28 @@ fun AddOffering (viewmodel: CourseViewModel= CourseViewModel(LocalContext.curren
             val courses = viewmodel.getAllCourses().collectAsState(emptyList()).value
             val selectedlectname =
                 if (selectedLecturer < lects.size)
-                    lects[selectedLecturer].name.toString()
+                    lects[selectedLecturer].name
                 else "Select Lecturer"
-            Dropdown("Lecturer: ", lects.map { it.name.toString() },
+            Dropdown("Lecturer: ", lects.map { it.name },
                 selectedlectname, modifier = Modifier.padding(16.dp)) { selectedLecturer = it }
             val selectedcoursename =
-                if (selectedCourse < courses.size) courses[selectedCourse].name.toString() else "Select Course"
+                if (selectedCourse < courses.size) courses[selectedCourse].name else "Select Course"
             Dropdown(
                 "Course: ",
-                courses.map { it.name.toString() },
+                courses.map { it.name },
                 selectedcoursename,
                 modifier = Modifier.padding(16.dp)
             ) { selectedCourse = it }
             var year by remember { mutableStateOf("2025") }
             OutlinedTextField(
-                year.toString(),
+                year,
                 onValueChange = { year = it },
                 label = { Text("Year") },
                 modifier = Modifier.padding(16.dp),
             )
             var semester by remember { mutableStateOf("1") }
             OutlinedTextField(
-                semester.toString(),
+                semester,
                 onValueChange = { semester = it },
                 label = { Text("Semester") },
                 modifier = Modifier.padding(16.dp),
@@ -167,7 +164,7 @@ fun AddOffering (viewmodel: CourseViewModel= CourseViewModel(LocalContext.curren
 fun EditOffering (viewmodel: CourseViewModel= CourseViewModel(LocalContext.current), navigateBack: () -> Unit={}, offering: CourseOffering=CourseOffering(0,0,0,2025,1)) {
     Scaffold(
         topBar = { CenterAlignedTopAppBar(
-            title = { Text("Edit Course Offering",) },
+            title = { Text("Edit Course Offering") },
             navigationIcon = { IconButton(onClick = navigateBack) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },) },
     ) { innerPadding ->
@@ -183,27 +180,27 @@ fun EditOffering (viewmodel: CourseViewModel= CourseViewModel(LocalContext.curre
 
             val selectedlect = lects.find { it.id==selectedLecturerId }
             val selectedlectname = selectedlect?.name ?:  "Select Lecturer"
-            Dropdown("Lecturer: ", lects.map { it.name.toString() },
+            Dropdown("Lecturer: ", lects.map { it.name },
                 selectedlectname, modifier = Modifier.padding(16.dp)) { selectedLecturerId = lects[it].id }
 
             val selectedcourse = courses.find { it.id==selectedCourseId }
             val selectedcoursename = selectedcourse?.name ?:  "Select Course"
             Dropdown(
                 "Course: ",
-                courses.map { it.name.toString() },
+                courses.map { it.name },
                 selectedcoursename,
                 modifier = Modifier.padding(16.dp)
             ) { selectedCourseId = courses[it].id }
             var year by remember { mutableStateOf(offering.year.toString()) }
             OutlinedTextField(
-                year.toString(),
+                year,
                 onValueChange = { year = it },
                 label = { Text("Year") },
                 modifier = Modifier.padding(16.dp),
             )
             var semester by remember { mutableStateOf(offering.semester.toString()) }
             OutlinedTextField(
-                semester.toString(),
+                semester,
                 onValueChange = { semester = it },
                 label = { Text("Semester") },
                 modifier = Modifier.padding(16.dp),
@@ -240,11 +237,11 @@ fun Nav( viewModel: CourseViewModel= CourseViewModel(LocalContext.current)) {
         composable("home") { Offerings(viewmodel=viewModel, navController=navController) }
         composable<AddOffering>{entry->
             val selected=entry.toRoute<AddOffering>().selected
-            AddOffering(viewmodel =viewModel, navigateBack = { navController.popBackStack(); }, selected) }
-        composable("addCourse") { AddCourse(viewmodel=viewModel, navigateBack = { navController.popBackStack(); }) }
-        composable("addLecturer") { AddLecturer(viewmodel=viewModel, navigateBack = { navController.popBackStack(); }) }
-        composable("Lecturers") { Lecturers(viewmodel=viewModel, navController,  navigateBack = { navController.popBackStack(); }) }
-        composable("Courses") { Courses(viewmodel=viewModel, navController,  navigateBack = { navController.popBackStack(); }) }
+            AddOffering(viewmodel =viewModel, navigateBack = { navController.popBackStack() }, selected) }
+        composable("addCourse") { AddCourse(viewmodel=viewModel, navigateBack = { navController.popBackStack() }) }
+        composable("addLecturer") { AddLecturer(viewmodel=viewModel, navigateBack = { navController.popBackStack() }) }
+        composable("Lecturers") { Lecturers(viewmodel=viewModel, navController,  navigateBack = { navController.popBackStack() }) }
+        composable("Courses") { Courses(viewmodel=viewModel, navController,  navigateBack = { navController.popBackStack() }) }
         composable<Lecturer>{ entry ->
             val lect=entry.toRoute<Lecturer>()
             EditLecturer(viewmodel=viewModel, navigateBack = { navController.popBackStack(); }, lecturer=lect)
@@ -266,7 +263,8 @@ fun Dropdown(label:String, names: List<String>, selected: String, modifier: Modi
         Text(label, style = AppTypography.titleLarge)
         Box(modifier = Modifier.fillMaxWidth()) {
             Row {
-                Text(selected.toString(), modifier = Modifier.clickable(onClick = { showDropDownMenu = true }),
+                Text(
+                    selected, modifier = Modifier.clickable(onClick = { showDropDownMenu = true }),
                     style = AppTypography.titleLarge)
                 Icon(Icons.Filled.ArrowDropDown,"Select Value",
                     modifier = Modifier.padding(0.dp).clickable(true, onClick = { showDropDownMenu = true }))
@@ -298,7 +296,7 @@ fun Offerings( modifier: Modifier=Modifier, viewmodel: CourseViewModel =CourseVi
     var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
     val lects = viewmodel.getAllLecturers().collectAsState(emptyList()).value
     val selected =
-        if (selectedIndex < lects.size) lects[selectedIndex].name.toString() else "Select Lecturer"
+        if (selectedIndex < lects.size) lects[selectedIndex].name else "Select Lecturer"
     val courseInfo = viewmodel.getCourseInfo(selected).collectAsState(emptyList()).value
     val offerings = viewmodel.allOfferings().collectAsState(emptyList()).value
 
@@ -316,7 +314,7 @@ fun Offerings( modifier: Modifier=Modifier, viewmodel: CourseViewModel =CourseVi
             modifier = modifier.padding(innerPadding),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Dropdown("Lecturer: ", lects.map { it.name.toString() }, selected, modifier = Modifier.padding(16.dp))
+            Dropdown("Lecturer: ", lects.map { it.name }, selected, modifier = Modifier.padding(16.dp))
             { selectedIndex = it }
             Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
                 TitleText("Course")
@@ -326,7 +324,7 @@ fun Offerings( modifier: Modifier=Modifier, viewmodel: CourseViewModel =CourseVi
             }
             LazyColumn(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
                 items(courseInfo.size) {
-                    Course(courseInfo[it], edit={navController.navigate(offerings.find({offering->offering.id==courseInfo[it].id})!!)})
+                    Course(courseInfo[it], edit={navController.navigate(offerings.find { offering -> offering.id == courseInfo[it].id }!!)})
                 }
             }
         }
@@ -364,13 +362,13 @@ fun AddCourse (viewmodel: CourseViewModel= CourseViewModel(LocalContext.current)
             var location by remember { mutableStateOf("") }
 
             OutlinedTextField(
-                name.toString(),
+                name,
                 onValueChange = { name = it },
                 label = { Text("Course Name") },
                 modifier = Modifier.padding(16.dp),
             )
             OutlinedTextField(
-                location.toString(),
+                location,
                 onValueChange = { location = it },
                 label = { Text("Location") },
                 modifier = Modifier.padding(16.dp),
@@ -401,13 +399,16 @@ fun AddLecturer (viewmodel: CourseViewModel= CourseViewModel(LocalContext.curren
             var phone by remember { mutableStateOf("") }
             var office by remember { mutableStateOf("") }
 
-            OutlinedTextField(name.toString(), onValueChange = { name = it },
+            OutlinedTextField(
+                name, onValueChange = { name = it },
                 label = { Text("Lecturer Name") },
                 modifier = Modifier.padding(16.dp),)
-            OutlinedTextField(phone.toString(), onValueChange = { phone = it },
+            OutlinedTextField(
+                phone, onValueChange = { phone = it },
                 label = { Text("Phone Number") },
                 modifier = Modifier.padding(16.dp),)
-            OutlinedTextField(office.toString(), onValueChange = { office = it },
+            OutlinedTextField(
+                office, onValueChange = { office = it },
                 label = { Text("Office") },
                 modifier = Modifier.padding(16.dp),)
             Button(onClick = { viewmodel.newLecturer(name=name,phone=phone,office=office)
@@ -428,9 +429,9 @@ fun EditLecturer (viewmodel: CourseViewModel= CourseViewModel(LocalContext.curre
             modifier = Modifier.padding(innerPadding),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            var name by remember { mutableStateOf(lecturer.name.toString()) }
-            var phone by remember { mutableStateOf(lecturer.phone.toString()) }
-            var office by remember { mutableStateOf(lecturer.office.toString()) }
+            var name by remember { mutableStateOf(lecturer.name) }
+            var phone by remember { mutableStateOf(lecturer.phone) }
+            var office by remember { mutableStateOf(lecturer.office) }
             OutlinedTextField(name, onValueChange = { name = it },
                 label = { Text("Lecturer Name") },
                 modifier = Modifier.padding(16.dp),)
@@ -462,8 +463,8 @@ fun EditCourse(viewmodel: CourseViewModel= CourseViewModel(LocalContext.current)
             modifier = Modifier.padding(innerPadding),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            var name by remember { mutableStateOf(course.name.toString()) }
-            var location by remember { mutableStateOf(course.location.toString()) }
+            var name by remember { mutableStateOf(course.name) }
+            var location by remember { mutableStateOf(course.location) }
             OutlinedTextField(name, onValueChange = { name = it },
                 label = { Text("Course Name") },
                 modifier = Modifier.padding(16.dp),)
@@ -483,9 +484,9 @@ fun EditCourse(viewmodel: CourseViewModel= CourseViewModel(LocalContext.current)
 @Composable
 fun Lecturer(lect: Lecturer, modifier: Modifier=Modifier, edit: (Long) -> Unit = {}) {
     Row(modifier=modifier.fillMaxWidth().clickable {edit(lect.id)})  {
-        Text(lect.name.toString(),modifier=modifier.weight(1f))
-        Text(lect.phone.toString(),modifier=modifier.weight(1f))
-        Text(lect.office.toString(),modifier=modifier.weight(1f))
+        Text(lect.name,modifier=modifier.weight(1f))
+        Text(lect.phone,modifier=modifier.weight(1f))
+        Text(lect.office,modifier=modifier.weight(1f))
     }
 }
 @Preview
@@ -526,8 +527,8 @@ fun Lecturers (viewmodel: CourseViewModel= CourseViewModel(LocalContext.current)
 @Composable
 fun Course(course: Course, modifier: Modifier=Modifier, edit: () -> Unit = {}) {
     Row(modifier=modifier.fillMaxWidth().clickable {edit()})  {
-        Text(course.name.toString(),modifier=modifier.weight(1f))
-        Text(course.location.toString(),modifier=modifier.weight(1f))
+        Text(course.name,modifier=modifier.weight(1f))
+        Text(course.location,modifier=modifier.weight(1f))
     }
 }
 @Preview

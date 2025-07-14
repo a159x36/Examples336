@@ -327,8 +327,8 @@ fun Greeting14() {
     }
 }
 
-data class AppState(val p1:Int,val p2:String)
-var state = MutableStateFlow(AppState(0,""))
+data class AppState(val p1:Int=0,val p2:String="")
+var state = MutableStateFlow(AppState())
 fun updateState(newp1:Int,newp2:String) {
     state.update{st->st.copy(p1=newp1,p2=newp2)}
 }

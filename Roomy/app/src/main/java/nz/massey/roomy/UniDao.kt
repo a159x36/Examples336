@@ -1,6 +1,5 @@
 package nz.massey.roomy
 
-import android.icu.text.MessagePattern.ArgType.SELECT
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
