@@ -5,6 +5,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlin.math.max
+import kotlin.math.min
+
+const val MINCOLS=2
+const val MAXCOLS=8
 
 class MatchingGameViewModel : ViewModel() {
 
@@ -14,6 +19,10 @@ class MatchingGameViewModel : ViewModel() {
 
     init {
         reset()
+    }
+
+    fun updatecols(newcols: Int) {
+        _uiState.update { currentState -> currentState.copy(cols = newcols) }
     }
 
     fun updateGameState(newscore: Int, newnummatched: Int, newlasttile: Tile?) {

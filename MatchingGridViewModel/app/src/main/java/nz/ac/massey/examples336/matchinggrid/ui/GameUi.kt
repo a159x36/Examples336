@@ -1,14 +1,17 @@
 package nz.ac.massey.examples336.matchinggrid.ui
 
-import android.R.attr.rotationY
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.calculateZoom
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -24,7 +27,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextFieldDefaults.contentPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -33,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -40,6 +43,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -48,11 +53,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import nz.ac.massey.examples336.matchinggrid.MAXCOLS
+import nz.ac.massey.examples336.matchinggrid.MINCOLS
 import nz.ac.massey.examples336.matchinggrid.MatchingGameViewModel
 import nz.ac.massey.examples336.matchinggrid.R
-import nz.ac.massey.examples336.matchinggrid.ROWHEIGHT
 import nz.ac.massey.examples336.matchinggrid.Tile
 import nz.ac.massey.examples336.matchinggrid.theme.ui.AppTheme
+import java.lang.Integer.max
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 val drawables= intArrayOf(
     R.drawable.ic_attachment_black_24dp,
@@ -65,7 +74,7 @@ val drawables= intArrayOf(
     R.drawable.ic_weekend_black_24dp,
 )
 
-const val TAG = "MatchingGame"
+//const val TAG = "MatchingGame"
 
 @Composable
 fun SureDialog(modifier: Modifier = Modifier, onConfirmation: () -> Unit, show: MutableState<Boolean>) {
@@ -156,9 +165,10 @@ fun AppBar(viewModel:MatchingGameViewModel, showDialog: MutableState<Boolean>, m
 fun MatchGame( modifier: Modifier = Modifier, viewModel: MatchingGameViewModel=viewModel()) {
     val showDialog = rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    var zoom by remember { mutableFloatStateOf(1f) }
     val uiState by viewModel.uiState.collectAsState()
 
-    SureDialog(modifier=modifier, {
+    SureDialog(modifier = modifier, {
         scope.launch {
             for (tile in uiState.tiles) {
                 tile.init()
@@ -167,17 +177,48 @@ fun MatchGame( modifier: Modifier = Modifier, viewModel: MatchingGameViewModel=v
             viewModel.reset()
         }
     }, showDialog)
-    Scaffold(modifier = modifier,
+    Scaffold(
+        modifier = modifier,
         topBar = { AppBar(viewModel, showDialog, Modifier) },
     ) { innerPadding ->
-        LazyVerticalGrid( columns = GridCells.Fixed(uiState.cols),
-            modifier = Modifier.padding(innerPadding)) {
-            items(uiState.tiles.size) { index ->
-                TurningButton(viewModel, uiState.tiles[index], modifier.height(ROWHEIGHT))
+        Box(
+            Modifier.padding(innerPadding).fillMaxSize()
+            .graphicsLayer { scaleX = zoom; scaleY = zoom }
+            .pointerInput(Unit) {
+                awaitEachGesture {
+                    awaitFirstDown(pass = PointerEventPass.Initial)
+                    do {
+                        val event = awaitPointerEvent(pass = PointerEventPass.Initial)
+                        val zoomChange = event.calculateZoom()
+                        if (zoomChange != 1f) {
+                            zoom *= zoomChange
+                            if(zoom!=0f) {
+                                val cols =
+                                    min(max((uiState.cols / zoom).roundToInt(), MINCOLS), MAXCOLS)
+                                if (cols != uiState.cols) {
+                                    viewModel.updatecols(cols)
+                                    zoom = 1f
+                                }
+                            }
+                            event.changes.forEach { it.consume() }
+                        }
+                    } while (event.changes.any { it.pressed })
+                    zoom = 1f
+                }
+            }) {
+            LazyVerticalGrid(columns = GridCells.Fixed(uiState.cols)) {
+                items(uiState.tiles.size) { index ->
+                    TurningButton(
+                        viewModel,
+                        uiState.tiles[index],
+                        modifier.aspectRatio(.75f).animateItem()
+                    )
+                }
             }
         }
     }
 }
+
 @Preview
 @Composable
 fun ComposablePreview() {
