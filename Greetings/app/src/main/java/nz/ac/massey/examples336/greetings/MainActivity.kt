@@ -189,7 +189,7 @@ fun Greeting4(modifier: Modifier = Modifier) {
 @Composable
 fun Greeting5() {
     Row(modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly) {
+        horizontalArrangement = Arrangement.SpaceAround) {
         Text("1")
         Text("2")
         Text("3")
@@ -200,7 +200,7 @@ fun Greeting5() {
 @Composable
 fun Greeting6() {
     Row(modifier = Modifier.fillMaxWidth()) {
-        Text("1",Modifier.weight(3f))
+        Text("1",Modifier.weight(5f))
         Text("2",Modifier.weight(2f))
         Text("3",Modifier.weight(1f))
     }
@@ -221,12 +221,12 @@ val scrollstate = rememberScrollState()
 @Composable
 fun Greeting7() {
     Column {
-        for (j in 1..4) {
+        for (j in 1..5) {
             Row(Modifier
                 .fillMaxWidth()
                 .weight(1f)
                 .align(Alignment.CenterHorizontally)) {
-                for (i in 1..4) {
+                for (i in 1..5) {
                     Text("($i,$j)",Modifier
                         .padding(8.dp)
                         .weight(1f)
@@ -276,7 +276,7 @@ fun Greeting10(modifier: Modifier = Modifier) {
         .fillMaxWidth()
         .padding(32.dp),
         shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)) {
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)) {
         Column {
             Text("Accept Agreement", fontSize = 24.sp, modifier =
                 Modifier.align(Alignment.CenterHorizontally))

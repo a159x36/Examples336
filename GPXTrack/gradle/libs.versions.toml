@@ -14,8 +14,8 @@ espressoCore = "3.6.1"
 junitVersion = "1.2.1"
 coreKtx = "1.16.0"
 kotlin = "2.2.0"
-composeBom = "2025.06.01"
-lifecycleViewmodelCompose = "2.9.1"
+composeBom = "2025.07.00"
+lifecycleViewmodelCompose = "2.9.2"
 
 
 [libraries]

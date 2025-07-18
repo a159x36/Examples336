@@ -79,27 +79,30 @@ class MainActivity : ComponentActivity() {
                 TextItem("Text3")
                 TextItem("Text4")
             }
-            Label("modifier.align(Alignment.Start)")
+            Label("horizontalArrangement = (Arrangement.Start)")
             Row(
-                modifier = modifier.align(Alignment.Start)
+                modifier = modifier.fillMaxWidth(),
+                horizontalArrangement = (Arrangement.Start)
             ) {
                 TextItem("Text1")
                 TextItem("Text2")
                 TextItem("Text3")
                 TextItem("Text4")
             }
-            Label("modifier.align(Alignment.End)")
+            Label("horizontalArrangement = (Arrangement.End)")
             Row(
-                modifier = modifier.align(Alignment.End),
+                modifier = modifier.fillMaxWidth(),
+                horizontalArrangement = (Arrangement.End),
             ) {
                 TextItem("Text1")
                 TextItem("Text2")
                 TextItem("Text3")
                 TextItem("Text4")
             }
-            Label("modifier.align(Alignment.CenterHorizontally)")
+            Label("horizontalArrangement = (Arrangement.Center)")
             Row(
-                modifier = modifier.align(Alignment.CenterHorizontally),
+                modifier = modifier.fillMaxWidth(),
+                horizontalArrangement = (Arrangement.Center),
             ) {
                 TextItem("Text1")
                 TextItem("Text2")
