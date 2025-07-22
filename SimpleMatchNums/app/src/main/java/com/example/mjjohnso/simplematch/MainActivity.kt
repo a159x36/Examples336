@@ -1,12 +1,9 @@
 package com.example.mjjohnso.simplematch
-import android.R.attr.rotation
-import android.content.res.Resources
+
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
@@ -17,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,17 +21,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-import kotlinx.coroutines.launch
 
 const val ROWS=4
 const val COLS=4
@@ -128,7 +120,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @Preview
+    @Preview(showBackground = true, showSystemUi = true)
     @Composable
     fun ComposablePreview() {
         init()
@@ -177,14 +169,14 @@ class MainActivity : ComponentActivity() {
         lastButtonIndex = -1 // no last button
         buttonValues.clear()
         buttonState.clear()
-        (1..ROWS*COLS).forEach { // add empty buttons
+        (1..ROWS*COLS).forEach { _ -> // add empty buttons
             buttonValues.add("")
             buttonState.add("")
         }
         for(i in 1..(ROWS * COLS) / 2) {
             var x: Int
             // put pairs of numbers behind random buttons
-            (0..1).forEach {
+            (0..1).forEach { _ ->
                 do {
                     x = (0..(ROWS * COLS)-1).random()
                 } while ("" != buttonValues[x])

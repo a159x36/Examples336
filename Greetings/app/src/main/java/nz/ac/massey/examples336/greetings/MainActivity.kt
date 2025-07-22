@@ -7,11 +7,19 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.EaseInOutBounce
+import androidx.compose.animation.core.EaseOutElastic
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -53,6 +61,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -97,9 +106,9 @@ import nz.ac.massey.examples336.greetings.ui.theme.Typography
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+      //  enableEdgeToEdge()
         setContent {
-        //    Greeting30()
+//            Greeting25()
 
             GreetingsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -109,6 +118,10 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             }
+
+
+
+
 
 
         }
@@ -414,7 +427,7 @@ fun Greeting20() {
 fun Greeting21() {
     val angle by animateFloatAsState(
         targetValue = if(hintVisible) 0f else 180f,
-        animationSpec = tween(2000, easing= LinearOutSlowInEasing))
+        animationSpec = tween(1000, easing= LinearOutSlowInEasing))
     Column(Modifier.fillMaxSize()) {
         Text("Here is a Handy Hint",
             style = Typography.headlineLarge,

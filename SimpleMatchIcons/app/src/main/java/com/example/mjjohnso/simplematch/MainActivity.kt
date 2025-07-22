@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,13 +26,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mjjohnso.simplematch.ui.theme.AppTheme
-import kotlin.collections.toBooleanArray
 
 const val ROWS=4
 const val COLS=4
@@ -77,7 +73,7 @@ class MainActivity : ComponentActivity() {
         if (!turned[index].value) {
             score++
             turned[index].value = true
-                if (lastButtonIndex == -1) {
+            if (lastButtonIndex == -1) {
                 lastButtonIndex = index
             } else {
                 if (tileValues[lastButtonIndex] == tileValues[index]) {
@@ -118,27 +114,29 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun MatchGame(modifier: Modifier = Modifier) {
-        Column {
+        Column(modifier = modifier) {
             Row {
-                Text(text = scoreState.value, modifier = modifier.weight(2f).align(Alignment.CenterVertically))
-                Button(onClick = { init() }, modifier = modifier.weight(1f)) {Text("Restart")}
+                Text(text = scoreState.value, modifier = Modifier.weight(2f).align(Alignment.CenterVertically))
+                Button(onClick = { init() }, modifier = Modifier.weight(1f)) {Text("Restart")}
             }
             for (i in 0..<ROWS) {
-                Row(modifier = modifier.weight(1f)) {
+                Row(modifier = Modifier.weight(1f)) {
                     for (j in 0..<COLS) {
                         val index = i * COLS + j
-                        TurningButton(index, modifier.weight(1f))
+                        TurningButton(index, Modifier.weight(1f))
                     }
                 }
             }
         }
     }
-    @Preview
+    @Preview(showBackground = true, showSystemUi = true)
     @Composable
     fun ComposablePreview() {
         init()
         AppTheme {
-            MatchGame()
+            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                MatchGame(modifier = Modifier.padding(innerPadding))
+            }
         }
     }
 
@@ -181,7 +179,7 @@ class MainActivity : ComponentActivity() {
         }
         for (i in 0..<(ROWS * COLS)/2) {
             var x: Int
-            for (j in 0..1) {
+            (0..1).forEach { _ ->
                 do {
                     x = (Math.random() * (ROWS * COLS)).toInt()
                 } while ( tileValues[x]!=-1)

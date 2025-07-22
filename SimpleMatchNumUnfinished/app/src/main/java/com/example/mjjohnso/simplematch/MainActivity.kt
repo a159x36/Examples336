@@ -131,14 +131,14 @@ class MainActivity : ComponentActivity() {
         lastButtonIndex = -1 // no last button
         buttonValues.clear()
         buttonState.clear()
-        (1..ROWS*COLS).forEach { // add empty buttons
+        (1..ROWS*COLS).forEach { _ -> // add empty buttons
             buttonValues.add("")
             buttonState.add("")
         }
         for(i in 1..(ROWS * COLS) / 2) {
             var x: Int
             // put pairs of numbers behind random buttons
-            (0..1).forEach {
+            (0..1).forEach { _ ->
                 do {
                     x = (0..(ROWS * COLS)-1).random()
                 } while ("" != buttonValues[x])

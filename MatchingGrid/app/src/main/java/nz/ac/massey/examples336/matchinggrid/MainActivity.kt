@@ -57,7 +57,7 @@ const val LAST = "LAST"
 const val MATCH = "MATCH"
 const val TILEVALS = "TILEVALS"
 const val TURNED = "TURNED"
-const val TAG = "MatchingGame"
+//const val TAG = "MatchingGame"
 
 
 class MainActivity : ComponentActivity() {
@@ -260,10 +260,10 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun showscore() {
-        if (numMatched == ((ROWS * COLS) / 2) ) {
-            scoreState = "Complete:$score"
+        scoreState = if (numMatched == ((ROWS * COLS) / 2) ) {
+            "Complete:$score"
         } else {
-            scoreState = "Score:$numMatched/$score"
+            "Score:$numMatched/$score"
         }
     }
 
@@ -278,7 +278,7 @@ class MainActivity : ComponentActivity() {
         }
         for (i in drawables.indices) {
             var x: Int
-            for (j in 0..<(ROWS* COLS)/drawables.size) {
+            (0..<(ROWS* COLS)/drawables.size).forEach { _ ->
                 do {
                     x = (0..ROWS*COLS-1).random()
                 } while ( tiles[x].value!=-1)
