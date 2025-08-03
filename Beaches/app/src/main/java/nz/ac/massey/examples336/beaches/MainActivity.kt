@@ -35,6 +35,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import nz.ac.massey.examples336.beaches.ui.theme.AppTheme
@@ -89,6 +90,7 @@ class MainActivity : ComponentActivity() {
 //            Log.i(TAG, "Image loaded:$index $bitmap ${Thread.currentThread().id}")
         }
         Box(modifier = Modifier.height(with(LocalDensity.current){720.toDp()}).background(Color.LightGray)) {
+            
             if(bitmap.value!=null) {
                 Log.i(TAG, "Image drawing $bitmap.value")
                 Image(bitmap.value!!.asImageBitmap(), contentDescription = "", contentScale = ContentScale.Crop, modifier = Modifier.fillMaxHeight())
@@ -97,14 +99,18 @@ class MainActivity : ComponentActivity() {
                 Text("Loading....",Modifier.fillMaxSize(), fontSize = 24.sp)
             }
 
-        /*    AsyncImage(
+// Uncomment this and comment out the above to use coil
+/*          
+            AsyncImage(
                 model = urls[index],
                 contentDescription = urls[index],
                 contentScale = ContentScale.Crop,
-                modifier = modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize()
             )
 
-         */
+ */
+
+
         }
 
     }
