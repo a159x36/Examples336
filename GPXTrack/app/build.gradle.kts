@@ -25,7 +25,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -33,14 +32,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
     kotlin {
-        jvmToolchain(17) // Use jvmToolchain to specify the Java version
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) // Set the JVM target
         }
@@ -60,7 +52,6 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.material3)
-//    implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)

@@ -4,10 +4,8 @@ androidGpxParser = "2.3.1"
 androidx-activity = "1.10.1"
 playServicesLocation = "21.3.0"
 uiTooling = "1.8.3"
-dagger = "2.56.2"
 datastorePreferences = "1.1.7"
-mapsCompose = "6.6.0"
-roborazzi = "1.45.1"
+mapsCompose = "6.7.1"
 playServicesWearable = "19.0.0"
 junit = "4.13.2"
 espressoCore = "3.7.0"
@@ -16,7 +14,6 @@ coreKtx = "1.16.0"
 kotlin = "2.2.0"
 composeBom = "2025.07.00"
 lifecycleViewmodelCompose = "2.9.2"
-
 
 [libraries]
 android-gpx-parser = { module = "com.github.ticofab:android-gpx-parser", version.ref = "androidGpxParser" }
@@ -44,8 +41,6 @@ androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
-dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger"}
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 
