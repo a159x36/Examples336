@@ -22,29 +22,26 @@ class ContactViewModel(val app:Application, init: () -> Unit): ViewModel() {
         val DIAL = booleanPreferencesKey("dial")
     }
 
-    private val _contacts = MutableStateFlow<List<Contact>>(emptyList())
-    val contacts = _contacts.asStateFlow<List<Contact>>()
+    private val _contacts = MutableStateFlow(emptyList<Contact>())
+    val contacts = _contacts.asStateFlow()
 
-    var sortRev = false
-    var dial = false
 
-/*
-    private val _sortRev = MutableStateFlow<Boolean>(false)
-    private val _dial = MutableStateFlow<Boolean>(false)
-    val sortRev = _sortRev.asStateFlow<Boolean>()
-    val dial = _dial.asStateFlow<Boolean>()
+    private val _sortRev = MutableStateFlow(false)
+    private val _dial = MutableStateFlow(false)
+    val sortRev =_sortRev.asStateFlow()
+    val dial = _dial.asStateFlow()
 
- */
+
 
     init{
         CoroutineScope(Dispatchers.IO).launch {
             app.dataStore.data.collect { settings ->
                 val newSortRev = settings[PreferenceKeys.SORT_REV]?:false
-                if(sortRev!=newSortRev) {
-                    sortRev = newSortRev
+                if(_sortRev.value!=newSortRev) {
+                    _sortRev.value = newSortRev
                     init()
                 }
-                dial = settings[PreferenceKeys.DIAL]?:false
+                _dial.value = settings[PreferenceKeys.DIAL]?:false
             }
         }
     }

@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Application1"
+rootProject.name = "TouchBubbles"
 include(":app")

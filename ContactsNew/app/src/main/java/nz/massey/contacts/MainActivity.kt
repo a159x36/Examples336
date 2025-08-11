@@ -1,5 +1,7 @@
 package nz.massey.contacts
 
+import android.annotation.SuppressLint
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -14,9 +16,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,6 +40,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.datastore.core.DataStore
@@ -42,9 +50,10 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import nz.massey.contacts.theme.ui.AppTheme
 import nz.massey.contacts.theme.ui.AppTypography
 
-const val TAG="Contacts"
+//const val TAG="Contacts"
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
@@ -72,9 +81,9 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun AppBar( modifier:Modifier) {
         var showDropDownMenu by remember { mutableStateOf(false) }
-        val prefs=dataStore.data.collectAsState(null)
-        val sortRev=prefs.value?.get(ContactViewModel.PreferenceKeys.SORT_REV)?:false
-        val dial=prefs.value?.get(ContactViewModel.PreferenceKeys.DIAL)?:false
+
+        val sortRev=viewmodel.sortRev.collectAsState().value
+        val dial=viewmodel.dial.collectAsState().value
 
         TopAppBar(
             modifier = modifier,
@@ -88,26 +97,38 @@ class MainActivity : ComponentActivity() {
                     onDismissRequest = { showDropDownMenu = false }
                 ) {
                     DropdownMenuItem(
-                        text= {
+                        text = {
                             SettingsSwitch(
                                 heading = "Dial",
                                 description = "Dial Directly?",
-                                state = dial?:false,
+                                state = dial,
                             ) { viewmodel.updateDial(it) }
                         }, onClick = {})
-                DropdownMenuItem(
-                        text= {
+                    DropdownMenuItem(
+                        text = {
                             SettingsSwitch(
                                 heading = "Sort Reverse",
                                 description = "Sort contacts in reverse order?",
-                                state = sortRev?:false,
+                                state = sortRev,
                             ) { viewmodel.updateSortRev(it) }
-                        }, onClick = {})}
+                        }, onClick = {})
+                }
 
             }
         )
     }
 
+    @SuppressLint("ViewModelConstructorInComposable")
+    @Preview(showBackground = true, showSystemUi = true)
+    @Composable
+    fun AppPreview() {
+        viewmodel = ContactViewModel(Application()) {}
+        viewmodel.setContacts(listOf(Contact(1, "Bob"), Contact(2, "Alice")))
+        AppTheme {
+            ContactList()
+        }
+    }
+    
     @Composable
     fun ContactList()  {
         Scaffold(
@@ -117,10 +138,29 @@ class MainActivity : ComponentActivity() {
             Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
                 LazyColumn {
                     items(contacts.size) { i ->
-                        Row {
-                            Text(text = contacts[i].name, modifier = Modifier.weight(4f))
-                            Button(onClick = { callphone(contacts[i].id) }, modifier = Modifier.weight(1f)) {
-                                Text("Call")
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            shape = RoundedCornerShape(4.dp),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                        ) {
+                            Row(Modifier.padding(8.dp)) {
+                                Text(
+                                    text = contacts[i].name,
+                                    style = AppTypography.displaySmall,
+                                    modifier = Modifier.weight(4f)
+                                )
+                                Button(
+                                    onClick = { callphone(contacts[i].id) },
+                                    modifier = Modifier.weight(1f),
+                                    shape = RoundedCornerShape(4.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(90,160,90)
+                                    )
+                                ) {
+                                    Text("Call")
+                                }
                             }
                         }
                     }
@@ -129,7 +169,7 @@ class MainActivity : ComponentActivity() {
         }
     }
     fun callphone(contactId:Int) {
-        val selectionargs: Array<String?>? = arrayOf<String?>("" + contactId)
+        val selectionargs: Array<String> = arrayOf("" + contactId)
         // contacts may have more than one phone number so the numbers are stored in a separate table
         val phones = contentResolver.query(
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
@@ -142,11 +182,10 @@ class MainActivity : ComponentActivity() {
         val index = phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
         val phoneNumber = phones.getString(index)
         phones.close()
-        //val prefs=dataStore.data.collect()
         // call the number
         startActivity(
             Intent(
-                if(viewmodel.dial) Intent.ACTION_CALL else Intent.ACTION_DIAL,
+                if(viewmodel.dial.value) Intent.ACTION_CALL else Intent.ACTION_DIAL,
                 ("tel:$phoneNumber").toUri())
         )
     }
@@ -154,7 +193,7 @@ class MainActivity : ComponentActivity() {
     fun init() {
         CoroutineScope(Dispatchers.IO).launch {
             // get preference to see if contacts are displayed in reverse order
-            val sortRev = viewmodel.sortRev
+            val sortRev = viewmodel.sortRev.value
             // get contacts with a phone number
             val cursor = contentResolver.query(
                 ContactsContract.Contacts.CONTENT_URI,
@@ -188,7 +227,9 @@ class MainActivity : ComponentActivity() {
         viewmodel = ContactViewModel(application) { init() }
         super.onCreate(savedInstanceState)
         setContent {
-            ContactList()
+            AppTheme {
+                ContactList()
+            }
         }
         val canReadContacts=checkSelfPermission(android.Manifest.permission.READ_CONTACTS)==PackageManager.PERMISSION_GRANTED
         val canCall=checkSelfPermission(android.Manifest.permission.CALL_PHONE)==PackageManager.PERMISSION_GRANTED
