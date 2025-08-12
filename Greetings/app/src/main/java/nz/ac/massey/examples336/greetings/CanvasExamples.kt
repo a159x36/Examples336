@@ -59,8 +59,8 @@ fun BasicCanvasUsage() {
 fun CanvasCircleExample() {
     Canvas(modifier = Modifier.fillMaxSize()) {
         drawCircle(
-            color = Color.Magenta,
-            radius = size.minDimension / 4F,
+            color = Color.Red,
+            radius = size.minDimension / 5F,
 
         )
     }
@@ -75,7 +75,8 @@ fun CanvasDrawDiagonalLineExample() {
         drawLine(
             start = Offset(x = canvasWidth, y = 0f),
             end = Offset(x = 0f, y = canvasHeight),
-            color = Color.Blue
+            color = Color.White,
+            strokeWidth = 10f
         )
     }
 }
@@ -84,7 +85,7 @@ fun CanvasDrawDiagonalLineExample() {
 @Composable
 fun CanvasTransformationScale() {
     Canvas(modifier = Modifier.fillMaxSize()) {
-        scale(scaleX = 10f, scaleY = 15f) {
+        scale(scaleX = 10f, scaleY = 10f) {
             drawCircle(Color.Blue, radius = 20.dp.toPx())
         }
     }
@@ -104,7 +105,7 @@ fun CanvasTransformationTranslate() {
 @Composable
 fun CanvasTransformationRotate() {
     Canvas(modifier = Modifier.fillMaxSize()) {
-        rotate(degrees = 45F) {
+        rotate(degrees = 23F) {
             drawRect(
                 color = Color.Gray,
                 topLeft = Offset(x = size.width / 3F, y = size.height / 3F),

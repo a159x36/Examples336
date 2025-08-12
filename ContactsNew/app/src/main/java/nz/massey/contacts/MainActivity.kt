@@ -137,11 +137,12 @@ class MainActivity : ComponentActivity() {
             val contacts = viewmodel.contacts.collectAsState().value
             Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
                 LazyColumn {
-                    items(contacts.size) { i ->
+                    items(contacts.size, key = { contacts[it].id }) { i ->
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(8.dp),
+                                .padding(8.dp)
+                                .animateItem(),
                             shape = RoundedCornerShape(4.dp),
                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                         ) {
