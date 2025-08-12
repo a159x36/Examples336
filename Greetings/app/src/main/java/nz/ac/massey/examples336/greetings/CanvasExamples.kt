@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
@@ -172,8 +173,9 @@ fun CanvasDrawPath() {
                 path.lineTo(size.width / 2f, size.height / 2f)
                 path.lineTo(size.width, 0f)
                 path.close()
+                path.addOval(Rect(0f,0f,size.width,size.height/2f))
                 onDrawBehind {
-                    drawPath(path, Color.Magenta, style = Stroke(width = 10f))
+                    drawPath(path, Color.Red, style = Stroke(width = 8f))
                 }
             }
             .fillMaxSize()

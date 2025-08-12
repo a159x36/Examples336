@@ -31,8 +31,6 @@ class ContactViewModel(val app:Application, init: () -> Unit): ViewModel() {
     val sortRev =_sortRev.asStateFlow()
     val dial = _dial.asStateFlow()
 
-
-
     init{
         CoroutineScope(Dispatchers.IO).launch {
             app.dataStore.data.collect { settings ->

@@ -1,5 +1,7 @@
 package nz.ac.massey.examples336.matchinggrid.ui
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -166,6 +168,7 @@ fun MatchGame( modifier: Modifier = Modifier, viewModel: MatchingGameViewModel=v
     val showDialog = rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     var zoom by remember { mutableFloatStateOf(1f) }
+    val animatedZoom = animateFloatAsState(zoom, SpringSpec(stiffness = Spring.StiffnessMediumLow, dampingRatio = Spring.DampingRatioLowBouncy))
     val uiState by viewModel.uiState.collectAsState()
 
     SureDialog(modifier = modifier, {
@@ -183,7 +186,7 @@ fun MatchGame( modifier: Modifier = Modifier, viewModel: MatchingGameViewModel=v
     ) { innerPadding ->
         Box(
             Modifier.padding(innerPadding).fillMaxSize()
-            .graphicsLayer { scaleX = zoom; scaleY = zoom }
+            .graphicsLayer { scaleX = animatedZoom.value; scaleY = animatedZoom.value }
             .pointerInput(Unit) {
                 awaitEachGesture {
                     awaitFirstDown(pass = PointerEventPass.Initial)
