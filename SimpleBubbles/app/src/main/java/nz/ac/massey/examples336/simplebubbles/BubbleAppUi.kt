@@ -88,14 +88,6 @@ fun AppBar(showDialog: MutableState<Boolean>, modifier:Modifier) {
         }
     )
 }
-/*
-@Preview(showBackground = true)
-@Composable
-fun BubbleAppPreview(viewModel: BubbleViewModel = BubbleViewModel(LocalContext.current)) {
-    BubbleApp(viewModel)
-}
-
- */
 
 @Preview(showSystemUi = true)
 @Composable

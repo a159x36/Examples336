@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import matching.composeapp.generated.resources.Res
@@ -59,13 +60,12 @@ import matching.composeapp.generated.resources.restart
 import matching.composeapp.generated.resources.yes
 import org.example.project.MatchingGameViewModel
 import org.example.project.Tile
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
-val drawables= arrayOf<DrawableResource>(
+val drawables= arrayOf(
     Res.drawable.ic_attachment_black_24dp,
     Res.drawable.ic_audiotrack_black_24dp,
     Res.drawable.ic_brightness_5_black_24dp,
@@ -162,7 +162,7 @@ fun AppBar(viewModel:MatchingGameViewModel, showDialog: MutableState<Boolean>, m
 
 val ROWHEIGHT=128.dp
 @Composable
-fun MatchGame( modifier: Modifier = Modifier, viewModel: MatchingGameViewModel=MatchingGameViewModel()) {
+fun MatchGame( modifier: Modifier = Modifier, viewModel: MatchingGameViewModel=viewModel()) {
     val showDialog = rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsState()
