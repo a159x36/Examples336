@@ -1,10 +1,6 @@
 package nz.massey.contacts
 
-import android.app.Application
-import android.content.Context
-import android.util.Log
-import androidx.compose.runtime.collectAsState
-import androidx.datastore.dataStore
+import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
@@ -18,13 +14,13 @@ import kotlinx.coroutines.launch
 import nz.massey.contacts.MainActivity.Contact
 
 @Suppress("UNCHECKED_CAST")
-class ContactViewModelFactory(val app:Application, val init: () -> Unit) : ViewModelProvider.Factory {
+class ContactViewModelFactory(val dataStore: DataStore<Preferences>, val init: () -> Unit) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return ContactViewModel(app, init) as T
+        return ContactViewModel(dataStore, init) as T
     }
 }
 
-class ContactViewModel(val app:Application, val init: () -> Unit): ViewModel() {
+class ContactViewModel(val dataStore: DataStore<Preferences>, val init: () -> Unit): ViewModel() {
 
     object PreferenceKeys {
         val SORT_REV = booleanPreferencesKey("sort_rev")
@@ -42,7 +38,7 @@ class ContactViewModel(val app:Application, val init: () -> Unit): ViewModel() {
 
     init{
         CoroutineScope(Dispatchers.IO).launch {
-            app.dataStore.data.collect { settings ->
+            dataStore.data.collect { settings ->
                 val newSortRev = settings[PreferenceKeys.SORT_REV]?:false
                 if(_sortRev.value!=newSortRev) {
                     _sortRev.value = newSortRev
@@ -60,7 +56,7 @@ class ContactViewModel(val app:Application, val init: () -> Unit): ViewModel() {
     // generic function to update preferences
     fun <T>setPref(key: Preferences.Key<T>, value: T) {
         CoroutineScope(Dispatchers.IO).launch {
-            app.dataStore.edit { settings ->
+            dataStore.edit { settings ->
                 settings[key] = value
             }
         }

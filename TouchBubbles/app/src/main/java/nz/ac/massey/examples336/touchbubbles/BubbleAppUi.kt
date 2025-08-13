@@ -114,7 +114,6 @@ fun Navigation(viewmodel: SettingsViewModel, bubbles:Bubbles) {
     }
 }
 
-@SuppressLint("ViewModelConstructorInComposable")
 @Preview
 @Composable
 fun Preview() {

@@ -1,7 +1,5 @@
 package nz.massey.contacts
 
-import android.annotation.SuppressLint
-import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -42,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
@@ -63,9 +62,10 @@ class MainActivity : ComponentActivity() {
 
     data class Contact (var id:Int, var name: String)
 
-    lateinit var viewmodel:ContactViewModel
+    val viewmodel:ContactViewModel by viewModels {
+        ContactViewModelFactory(dataStore) { init() }
+    }
 
-    //    val viewmodel:ContactViewModel by viewModels() { ContactViewModelFactory(application) { init() } }
     @Composable
     fun SettingsSwitch(modifier:Modifier=Modifier, heading:String, description:String, state: Boolean, onChange:(Boolean)->Unit={}) {
         Row (horizontalArrangement = Arrangement.SpaceBetween, modifier = modifier.padding(8.dp)){
@@ -83,7 +83,7 @@ class MainActivity : ComponentActivity() {
     }
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun AppBar( modifier:Modifier) {
+    fun AppBar(viewmodel: ContactViewModel, modifier:Modifier) {
         var showDropDownMenu by remember { mutableStateOf(false) }
 
         val sortRev=viewmodel.sortRev.collectAsState().value
@@ -122,21 +122,20 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-    @SuppressLint("ViewModelConstructorInComposable")
     @Preview(showBackground = true, showSystemUi = true)
     @Composable
     fun AppPreview() {
-        viewmodel = ContactViewModel(Application()) {}
+       val viewmodel:ContactViewModel =viewModel(factory = ContactViewModelFactory(LocalContext.current.dataStore) { init() })
         viewmodel.setContacts(listOf(Contact(1, "Bob"), Contact(2, "Alice")))
         AppTheme {
-            ContactList()
+            ContactList(viewmodel)
         }
     }
     
     @Composable
-    fun ContactList()  {
+    fun ContactList(viewmodel: ContactViewModel)  {
         Scaffold(
-            topBar = { AppBar( modifier = Modifier) },
+            topBar = { AppBar(viewmodel, modifier = Modifier) },
         ) { innerPadding ->
             val contacts = viewmodel.contacts.collectAsState().value
             Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
@@ -173,7 +172,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    fun callphone(contactId:Int) {
+    fun callphone( contactId:Int) {
         val selectionargs: Array<String> = arrayOf("" + contactId)
         // contacts may have more than one phone number so the numbers are stored in a separate table
         val phones = contentResolver.query(
@@ -194,8 +193,6 @@ class MainActivity : ComponentActivity() {
                 ("tel:$phoneNumber").toUri())
         )
     }
- //   lateinit var viewmodel: ContactViewModel
-  //  lateinit var viewmodel:ContactViewModel
 
     fun init() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -230,14 +227,10 @@ class MainActivity : ComponentActivity() {
         }
     }
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
-       // viewmodel = ContactViewModel(application) { init() }
-
-        val viewmodel1:ContactViewModel by viewModels {ContactViewModelFactory(application) { init() }}
-        viewmodel by viewModels { ContactViewModelFactory(application) { init() } }
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                ContactList()
+                ContactList(viewmodel)
             }
         }
         val canReadContacts=checkSelfPermission(android.Manifest.permission.READ_CONTACTS)==PackageManager.PERMISSION_GRANTED
