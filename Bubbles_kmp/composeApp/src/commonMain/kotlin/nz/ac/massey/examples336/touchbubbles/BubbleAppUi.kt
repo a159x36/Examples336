@@ -31,6 +31,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.lifecycle.compose.LifecycleResumeEffect
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -98,7 +99,7 @@ fun AppBar(showDialog: MutableState<Boolean>?=null, modifier:Modifier, navContro
 
 @Preview
 @Composable
-fun Navigation(viewmodel: SettingsViewModel=SettingsViewModel()) {
+fun Navigation(viewmodel: SettingsViewModel = viewModel()) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,

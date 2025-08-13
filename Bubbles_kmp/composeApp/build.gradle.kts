@@ -61,6 +61,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(compose.material3)
             implementation(libs.navigation.compose)
+            implementation(libs.lifecycle.viewmodel.compose)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
