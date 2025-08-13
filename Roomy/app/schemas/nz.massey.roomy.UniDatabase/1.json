@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "92382fc075c2c547fc52dd39abaa1a38",
+    "identityHash": "f0e7f90e2c264ad4a97cb3a91217b749",
     "entities": [
       {
         "tableName": "Lecturer",
@@ -72,7 +72,7 @@
       },
       {
         "tableName": "CourseOffering",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `course_id` INTEGER NOT NULL, `lecturer_id` INTEGER NOT NULL, `year` INTEGER NOT NULL, `semester` INTEGER NOT NULL, FOREIGN KEY(`course_id`) REFERENCES `Course`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`lecturer_id`) REFERENCES `Lecturer`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `courseId` INTEGER NOT NULL, `lecturerId` INTEGER NOT NULL, `year` INTEGER NOT NULL, `semester` INTEGER NOT NULL, FOREIGN KEY(`courseId`) REFERENCES `Course`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`lecturerId`) REFERENCES `Lecturer`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -81,14 +81,14 @@
             "notNull": true
           },
           {
-            "fieldPath": "course_id",
-            "columnName": "course_id",
+            "fieldPath": "courseId",
+            "columnName": "courseId",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "lecturer_id",
-            "columnName": "lecturer_id",
+            "fieldPath": "lecturerId",
+            "columnName": "lecturerId",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -113,22 +113,22 @@
         },
         "indices": [
           {
-            "name": "index_CourseOffering_course_id",
+            "name": "index_CourseOffering_courseId",
             "unique": false,
             "columnNames": [
-              "course_id"
+              "courseId"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_CourseOffering_course_id` ON `${TABLE_NAME}` (`course_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_CourseOffering_courseId` ON `${TABLE_NAME}` (`courseId`)"
           },
           {
-            "name": "index_CourseOffering_lecturer_id",
+            "name": "index_CourseOffering_lecturerId",
             "unique": false,
             "columnNames": [
-              "lecturer_id"
+              "lecturerId"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_CourseOffering_lecturer_id` ON `${TABLE_NAME}` (`lecturer_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_CourseOffering_lecturerId` ON `${TABLE_NAME}` (`lecturerId`)"
           }
         ],
         "foreignKeys": [
@@ -137,7 +137,7 @@
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "course_id"
+              "courseId"
             ],
             "referencedColumns": [
               "id"
@@ -148,7 +148,7 @@
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "lecturer_id"
+              "lecturerId"
             ],
             "referencedColumns": [
               "id"
@@ -159,7 +159,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '92382fc075c2c547fc52dd39abaa1a38')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f0e7f90e2c264ad4a97cb3a91217b749')"
     ]
   }
 }

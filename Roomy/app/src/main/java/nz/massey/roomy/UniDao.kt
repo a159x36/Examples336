@@ -28,7 +28,7 @@ interface UniDao {
     @Query("SELECT * FROM courseoffering where id=:id")
     fun getOffering(id: Long): CourseOffering
 
-    @Query("SELECT * FROM courseoffering")
+    @Query("SELECT * FROM courseoffering ORDER BY year, semester")
     fun allOfferings(): Flow<List<CourseOffering>>
 
     @Insert
@@ -46,11 +46,11 @@ interface UniDao {
     @Query("UPDATE course SET name=:name, location=:location where id=:id")
     fun updateCourse(id: Long, name: String, location: String)
 
-    @Query("SELECT courseoffering.id as id, course.name AS coursename, lecturer.name AS lecturername, courseoffering.year, courseoffering.semester FROM course,courseoffering,lecturer WHERE lecturer.name=:lect AND lecturer_id=lecturer.id AND course_id=course.id ORDER BY courseoffering.year, coursename")
+    @Query("SELECT courseoffering.id as id, course.name AS coursename, lecturer.name AS lecturername, courseoffering.year, courseoffering.semester FROM course,courseoffering,lecturer WHERE lecturer.name=:lect AND lecturerId=lecturer.id AND courseId=course.id ORDER BY courseoffering.year, coursename")
     fun getCourseInfo(lect: String): Flow<List<CourseInfo>>
 
-    @Query("UPDATE courseoffering SET lecturer_id=:lecturer_id, course_id=:course_id, year=:year, semester=:semester where id=:id")
-    fun updateOffering(id: Long, lecturer_id: Long, course_id: Long, year: Int, semester: Int)
+    @Query("UPDATE courseoffering SET lecturerId=:lecturerId, courseId=:courseId, year=:year, semester=:semester where id=:id")
+    fun updateOffering(id: Long, lecturerId: Long, courseId: Long, year: Int, semester: Int)
 
     @Query("SELECT * FROM lecturer where id=:id")
     fun getLecturer(id: Long): Flow<Lecturer>

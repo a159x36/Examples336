@@ -12,16 +12,20 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-
-
-class SettingsViewModel(private val ctxt: Context, prefschanged: () -> Unit)  : ViewModel() {
+@Suppress("UNCHECKED_CAST")
+class SettingsViewModelFactory(val dataStore: DataStore<Preferences>, val prefschanged: () -> Unit) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return SettingsViewModel(dataStore, prefschanged) as T
+    }
+}
+class SettingsViewModel(val dataStore: DataStore<Preferences>, prefschanged: () -> Unit)  : ViewModel() {
     private val _nlarge = MutableStateFlow(0)
     private val _nbubbles = MutableStateFlow(0)
     private val _fps = MutableStateFlow(0)
@@ -50,7 +54,7 @@ class SettingsViewModel(private val ctxt: Context, prefschanged: () -> Unit)  : 
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            ctxt.dataStore.data.collect {
+            dataStore.data.collect {
                 preferences ->
                 _nbubbles.value=preferences[PreferenceKeys.NBUBBLES]?:200
                 _nlarge.value=preferences[PreferenceKeys.NLARGE]?:1
@@ -82,7 +86,7 @@ class SettingsViewModel(private val ctxt: Context, prefschanged: () -> Unit)  : 
 
     fun <T>setPref(key: Preferences.Key<T>, value: T) {
         CoroutineScope(Dispatchers.IO).launch {
-            ctxt.dataStore.edit { settings ->
+            dataStore.edit { settings ->
                 settings[key] = value
             }
         }

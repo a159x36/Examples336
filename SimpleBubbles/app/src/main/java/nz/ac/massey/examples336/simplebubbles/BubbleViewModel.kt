@@ -12,14 +12,14 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.ViewModel
 
-class BubbleViewModel(context: Context): ViewModel() {
+class BubbleViewModel(): ViewModel() {
     val FPS=60L
     var frameNumber = mutableIntStateOf(1)
     var canvasSize by mutableStateOf(Size(0f,0f))
     data class Bubble(var x:Float, var y:Float, var vx:Float, var vy:Float, var r:Float=100f, var color:Color)
 
     val NBUBBLES=100
-    val bubbleImage: ImageBitmap = BitmapFactory.decodeResource(context.resources,R.drawable.bubble).asImageBitmap()
+   // val bubbleImage: ImageBitmap = BitmapFactory.decodeResource(context.resources,R.drawable.bubble).asImageBitmap()
 
     init {
         init()

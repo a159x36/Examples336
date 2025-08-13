@@ -20,18 +20,18 @@ data class Course(@PrimaryKey(autoGenerate = true) val id: Long=0,
 @Entity(
     foreignKeys = [ForeignKey(entity = Course::class,
         parentColumns = arrayOf("id"),
-        childColumns = arrayOf("course_id"),
+        childColumns = arrayOf("courseId"),
         onDelete = ForeignKey.CASCADE), ForeignKey(entity = Lecturer::class,
         parentColumns = arrayOf("id"),
-        childColumns = arrayOf("lecturer_id"),
+        childColumns = arrayOf("lecturerId"),
         onDelete = ForeignKey.CASCADE)],
     indices = [
-        Index("course_id"),
-        Index("lecturer_id")]
+        Index("courseId"),
+        Index("lecturerId")]
 )
 @Serializable
 data class CourseOffering(@PrimaryKey(autoGenerate = true) val id: Long=0,
-                          val course_id: Long,
-                          val lecturer_id: Long,
+                          val courseId: Long,
+                          val lecturerId: Long,
                           val year: Int,
                           val semester: Int)

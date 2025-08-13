@@ -9,12 +9,14 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -47,7 +49,12 @@ import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
 import nz.massey.roomy.theme.ui.AppTypography
 
-
+@Composable
+fun TextButton(onClick: () -> Unit, text: String) {
+    Button(onClick = onClick, shape = RoundedCornerShape(8.dp), modifier = Modifier.padding(start=16.dp,top=16.dp)) {
+        Text(text)
+    }
+}
 @Composable
 fun Course(course: CourseInfo, modifier: Modifier=Modifier, edit:()->Unit){
     Row(modifier=modifier.fillMaxWidth().clickable{edit()}) {
@@ -143,16 +150,17 @@ fun AddOffering (viewmodel: CourseViewModel= CourseViewModel(LocalContext.curren
                 label = { Text("Semester") },
                 modifier = Modifier.padding(16.dp),
             )
-            Button(onClick = {
-                viewmodel.newOffering(
-                    courseid = courses[selectedCourse].id,
-                    lectid = lects[selectedLecturer].id,
-                    year=year.toInt(),
-                    semester=semester.toInt()
-                )
-                navigateBack()
-            }
-            ) { Text("Add") }
+            TextButton(onClick = {
+                if(selectedCourse<courses.size && selectedLecturer<lects.size) {
+                    viewmodel.newOffering(
+                        courseid = courses[selectedCourse].id,
+                        lectid = lects[selectedLecturer].id,
+                        year = year.toInt(),
+                        semester = semester.toInt()
+                    )
+                    navigateBack()
+                }
+            },"Add")
         }
     }
 
@@ -175,8 +183,8 @@ fun EditOffering (viewmodel: CourseViewModel= CourseViewModel(LocalContext.curre
 
             val lects = viewmodel.getAllLecturers().collectAsState(emptyList()).value
             val courses = viewmodel.getAllCourses().collectAsState(emptyList()).value
-            var selectedLecturerId by remember { mutableLongStateOf(offering.lecturer_id)}
-            var selectedCourseId by remember { mutableLongStateOf(offering.course_id)}
+            var selectedLecturerId by remember { mutableLongStateOf(offering.lecturerId)}
+            var selectedCourseId by remember { mutableLongStateOf(offering.courseId)}
 
             val selectedlect = lects.find { it.id==selectedLecturerId }
             val selectedlectname = selectedlect?.name ?:  "Select Lecturer"
@@ -205,7 +213,7 @@ fun EditOffering (viewmodel: CourseViewModel= CourseViewModel(LocalContext.curre
                 label = { Text("Semester") },
                 modifier = Modifier.padding(16.dp),
             )
-            Button(onClick = {
+            TextButton(onClick = {
                 viewmodel.updateOffering(offering.id,
                     courseid = selectedCourseId,
                     lectid = selectedLecturerId,
@@ -213,13 +221,11 @@ fun EditOffering (viewmodel: CourseViewModel= CourseViewModel(LocalContext.curre
                     semester=semester.toInt()
                 )
                 navigateBack()
-            }
-            ) { Text("Update") }
-            Button(onClick = {
+            },"Update")
+            TextButton(onClick = {
                 viewmodel.deleteOffering(offering.id)
                 navigateBack()
-            }
-            ) { Text("Delete") }
+            },"Delete")
         }
     }
 
@@ -323,8 +329,12 @@ fun Offerings( modifier: Modifier=Modifier, viewmodel: CourseViewModel =CourseVi
                 TitleText("Semester")
             }
             LazyColumn(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
-                items(courseInfo.size) {
-                    Course(courseInfo[it], edit={navController.navigate(offerings.find { offering -> offering.id == courseInfo[it].id }!!)})
+                items(courseInfo.size, key = { courseInfo[it].id }) {
+                    Box(modifier = Modifier.animateItem().padding(bottom = 8.dp)) {
+                        Course(
+                            courseInfo[it],
+                            edit = { navController.navigate(offerings.find { offering -> offering.id == courseInfo[it].id }!!) })
+                    }
                 }
             }
         }
@@ -373,11 +383,10 @@ fun AddCourse (viewmodel: CourseViewModel= CourseViewModel(LocalContext.current)
                 label = { Text("Location") },
                 modifier = Modifier.padding(16.dp),
             )
-            Button(onClick = {
+            TextButton(onClick = {
                 viewmodel.newCourse(name=name,location=location)
                 navigateBack()
-            }
-            ) { Text("Add") }
+            }, "Add")
         }
     }
 
@@ -411,8 +420,8 @@ fun AddLecturer (viewmodel: CourseViewModel= CourseViewModel(LocalContext.curren
                 office, onValueChange = { office = it },
                 label = { Text("Office") },
                 modifier = Modifier.padding(16.dp),)
-            Button(onClick = { viewmodel.newLecturer(name=name,phone=phone,office=office)
-                navigateBack() }) { Text("Add") }
+            TextButton(onClick = { viewmodel.newLecturer(name=name,phone=phone,office=office)
+                navigateBack() },"Add")
         }
     }
 }
@@ -441,11 +450,11 @@ fun EditLecturer (viewmodel: CourseViewModel= CourseViewModel(LocalContext.curre
             OutlinedTextField(office, onValueChange = { office = it },
                 label = { Text("Office") },
                 modifier = Modifier.padding(16.dp),)
-            Button(onClick = { viewmodel.updateLecturer(id=lecturer.id,name=name,
+            TextButton(onClick = { viewmodel.updateLecturer(id=lecturer.id,name=name,
                 phone=phone,office=office)
-                navigateBack() }) { Text("Update") }
-            Button(onClick = { viewmodel.deleteLecturer(id=lecturer.id)
-                navigateBack() }) { Text("Delete") }
+                navigateBack() },"Update")
+            TextButton(onClick = { viewmodel.deleteLecturer(id=lecturer.id)
+                navigateBack() },"Delete")
 
         }
     }
@@ -472,11 +481,11 @@ fun EditCourse(viewmodel: CourseViewModel= CourseViewModel(LocalContext.current)
                 label = { Text("Location") },
                 modifier = Modifier.padding(16.dp),)
 
-            Button(onClick = { viewmodel.updateCourse(id=course.id,name=name,
+            TextButton(onClick = { viewmodel.updateCourse(id=course.id,name=name,
                 location=location)
-                navigateBack() }) { Text("Update") }
-            Button(onClick = { viewmodel.deleteCourse(id=course.id)
-                navigateBack() }) { Text("Delete") }
+                navigateBack() },"Update")
+            TextButton(onClick = { viewmodel.deleteCourse(id=course.id)
+                navigateBack() },"Delete")
 
         }
     }
@@ -494,11 +503,21 @@ fun Lecturer(lect: Lecturer, modifier: Modifier=Modifier, edit: (Long) -> Unit =
 @Composable
 fun Lecturers (viewmodel: CourseViewModel= CourseViewModel(LocalContext.current), navController: NavHostController=NavHostController(LocalContext.current), navigateBack: () -> Unit ={navController.popBackStack()}) {
     val lects = viewmodel.getAllLecturers().collectAsState(emptyList()).value
-    Scaffold(topBar = { CenterAlignedTopAppBar(title = { Text("Lecturers") },
-
-                navigationIcon = { IconButton(onClick = navigateBack) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back") } },)},
-                      floatingActionButton = {
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { Text("Lecturers") },
+                navigationIcon = {
+                    IconButton(onClick = navigateBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+            )
+        },
+        floatingActionButton = {
             FloatingActionButton(
                 modifier = Modifier.padding(16.dp),
                 onClick = { navController.navigate("addLecturer") },
@@ -516,9 +535,13 @@ fun Lecturers (viewmodel: CourseViewModel= CourseViewModel(LocalContext.current)
                 TitleText("Office")
             }
             LazyColumn(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
-                items(lects.size) {
-                    Lecturer(lects[it], edit= {id ->
-                        navController.navigate(lects[it])})
+                items(lects.size, key = { lects[it].id }) {
+                    Box(modifier = Modifier.animateItem()) {
+                        Lecturer(
+                            lects[it],
+                            edit = { id -> navController.navigate(lects[it])
+                            })
+                    }
                 }
             }
         }
@@ -556,8 +579,12 @@ fun Courses (viewmodel: CourseViewModel= CourseViewModel(LocalContext.current), 
                 TitleText("Location")
             }
             LazyColumn(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
-                items(courses.size) {
-                    Course(courses[it], edit= { navController.navigate(courses[it])})
+                items(courses.size, key = { courses[it].id }) {
+                    Box(modifier = Modifier.animateItem()) {
+                        Course(
+                            courses[it],
+                            edit = { navController.navigate(courses[it]) })
+                    }
                 }
             }
         }

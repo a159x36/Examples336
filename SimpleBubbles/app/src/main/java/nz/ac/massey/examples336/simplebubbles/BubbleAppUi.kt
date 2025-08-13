@@ -1,5 +1,6 @@
 package nz.ac.massey.examples336.simplebubbles
 
+import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.lifecycle.compose.LifecycleResumeEffect
@@ -60,13 +62,14 @@ fun SureDialog(onConfirmation: () -> Unit, show: MutableState<Boolean>) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar(showDialog: MutableState<Boolean>?=null, modifier:Modifier) {
+fun AppBar(showDialog: MutableState<Boolean>, modifier:Modifier) {
     var showDropDownMenu by remember { mutableStateOf(false) }
     TopAppBar(
         modifier = modifier,
         title = { Text(text = "Bubbles") },
         actions = {
-            IconButton(onClick = { showDropDownMenu = true }) {
+            IconButton(onClick = { showDialog.value=true}) {Icon(Icons.Filled.Refresh, null)}
+            IconButton(onClick = { showDropDownMenu = true}) {
                 Icon(Icons.Filled.MoreVert, null)
             }
             DropdownMenu(
@@ -78,21 +81,23 @@ fun AppBar(showDialog: MutableState<Boolean>?=null, modifier:Modifier) {
                     leadingIcon = { Icon(Icons.Filled.Refresh, null) },
                     onClick = {
                         showDropDownMenu = false
-                        showDialog?.value = true
+                        showDialog.value = true
                     }
                 )
             }
         }
     )
 }
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun BubbleAppPreview(viewModel: BubbleViewModel = BubbleViewModel(LocalContext.current)) {
     BubbleApp(viewModel)
 }
 
+ */
 
+@Preview(showSystemUi = true)
 @Composable
 fun BubbleApp(  viewModel: BubbleViewModel = viewModel()) {
     val showDialog = rememberSaveable { mutableStateOf(false) }

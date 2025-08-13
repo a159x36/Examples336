@@ -2,18 +2,24 @@ package nz.massey.roomy
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import nz.massey.roomy.UniDatabase.Companion.getDatabase
 
+@Suppress("UNCHECKED_CAST")
+class CourseViewModelFactory(val context: Context) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return CourseViewModel(context) as T
+    }
+}
 class CourseViewModel(context:Context) : ViewModel() {
     val mDao: UniDao
     init {
         val db = getDatabase(context)
         mDao = db.UniDao()
     }
-
 
     fun getAllCourses() = mDao.allCourses()
 
@@ -23,7 +29,7 @@ class CourseViewModel(context:Context) : ViewModel() {
 
     fun newOffering(lectid: Long, courseid: Long, year: Int, semester: Int) {
         CoroutineScope(Dispatchers.IO).launch {
-            mDao.insert(CourseOffering(course_id = courseid, lecturer_id = lectid, year = year, semester = semester))
+            mDao.insert(CourseOffering(courseId = courseid, lecturerId = lectid, year = year, semester = semester))
         }
     }
 
@@ -37,7 +43,7 @@ class CourseViewModel(context:Context) : ViewModel() {
 
     fun updateOffering(id: Long, lectid: Long, courseid: Long, year: Int, semester: Int) {
         CoroutineScope(Dispatchers.IO).launch {
-            mDao.updateOffering(id = id, course_id = courseid, lecturer_id = lectid, year = year, semester = semester)
+            mDao.updateOffering(id = id, courseId = courseid, lecturerId = lectid, year = year, semester = semester)
         }
     }
 

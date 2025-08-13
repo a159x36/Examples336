@@ -39,7 +39,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
+import androidx.datastore.dataStore
 import androidx.lifecycle.compose.LifecycleResumeEffect
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -118,11 +120,12 @@ fun Navigation(viewmodel: SettingsViewModel, bubbles:Bubbles) {
 fun Preview() {
     val context = LocalContext.current
     lateinit var bubbles:Bubbles
-    val viewmodel = SettingsViewModel(LocalContext.current) {
+
+    val viewmodel: SettingsViewModel = viewModel(factory= SettingsViewModelFactory(context.dataStore) {//SettingsViewModel(LocalContext.current) {
         CoroutineScope(Dispatchers.IO).launch {
             bubbles.init(context)
         }
-    }
+    })
     bubbles=Bubbles(viewmodel)
     Navigation(viewmodel, bubbles)
 }

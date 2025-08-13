@@ -1,5 +1,6 @@
 package nz.ac.massey.examples336.touchbubbles
 
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -9,6 +10,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,14 +22,22 @@ import nz.ac.massey.examples336.touchbubbles.theme.ui.AppTheme
 
 const val TAG = "TouchBubbles"
 
+
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+
 class MainActivity : ComponentActivity(),SensorEventListener {
 
     var sensormanager:SensorManager?=null
     var accelerometer:Sensor?=null
-
-    lateinit var viewmodel:SettingsViewModel
-
     lateinit var bubbles:Bubbles
+
+    val viewmodel:SettingsViewModel by viewModels {
+        SettingsViewModelFactory(dataStore) {
+            CoroutineScope(Dispatchers.IO).launch {
+                bubbles.init(this@MainActivity)
+            }
+        }
+    }
 
     override fun onResume() {
         super.onResume()
@@ -39,11 +52,7 @@ class MainActivity : ComponentActivity(),SensorEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         System.loadLibrary("bubblemover")
-        viewmodel=SettingsViewModel(application) {
-            CoroutineScope(Dispatchers.IO).launch {
-                bubbles.init(this@MainActivity)
-            }
-        }
+
         bubbles=Bubbles(viewmodel)
 
         setContent {
