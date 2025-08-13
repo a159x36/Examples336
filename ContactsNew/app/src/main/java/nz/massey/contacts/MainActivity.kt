@@ -9,6 +9,7 @@ import android.provider.ContactsContract
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -47,6 +48,7 @@ import androidx.core.net.toUri
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -61,7 +63,9 @@ class MainActivity : ComponentActivity() {
 
     data class Contact (var id:Int, var name: String)
 
+    lateinit var viewmodel:ContactViewModel
 
+    //    val viewmodel:ContactViewModel by viewModels() { ContactViewModelFactory(application) { init() } }
     @Composable
     fun SettingsSwitch(modifier:Modifier=Modifier, heading:String, description:String, state: Boolean, onChange:(Boolean)->Unit={}) {
         Row (horizontalArrangement = Arrangement.SpaceBetween, modifier = modifier.padding(8.dp)){
@@ -190,7 +194,9 @@ class MainActivity : ComponentActivity() {
                 ("tel:$phoneNumber").toUri())
         )
     }
-    lateinit var viewmodel: ContactViewModel
+ //   lateinit var viewmodel: ContactViewModel
+  //  lateinit var viewmodel:ContactViewModel
+
     fun init() {
         CoroutineScope(Dispatchers.IO).launch {
             // get preference to see if contacts are displayed in reverse order
@@ -223,9 +229,11 @@ class MainActivity : ComponentActivity() {
             viewmodel.setContacts(contacts)
         }
     }
-
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
-        viewmodel = ContactViewModel(application) { init() }
+       // viewmodel = ContactViewModel(application) { init() }
+
+        val viewmodel1:ContactViewModel by viewModels {ContactViewModelFactory(application) { init() }}
+        viewmodel by viewModels { ContactViewModelFactory(application) { init() } }
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {

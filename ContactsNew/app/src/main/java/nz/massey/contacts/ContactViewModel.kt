@@ -1,6 +1,7 @@
 package nz.massey.contacts
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.collectAsState
 import androidx.datastore.dataStore
@@ -8,6 +9,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +17,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import nz.massey.contacts.MainActivity.Contact
 
-class ContactViewModel(val app:Application, init: () -> Unit): ViewModel() {
+@Suppress("UNCHECKED_CAST")
+class ContactViewModelFactory(val app:Application, val init: () -> Unit) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return ContactViewModel(app, init) as T
+    }
+}
+
+class ContactViewModel(val app:Application, val init: () -> Unit): ViewModel() {
 
     object PreferenceKeys {
         val SORT_REV = booleanPreferencesKey("sort_rev")

@@ -220,7 +220,7 @@ fun CameraPreview(
 fun CameraScreenPreview() {
         CameraApp()
 }
-val viewModel = CameraViewModel()
+
 class MainActivity : ComponentActivity() {
     private val REQUIRED_PERMISSIONS =
             mutableListOf (
@@ -256,7 +256,7 @@ class MainActivity : ComponentActivity() {
                     setContent {
                         CameraxTheme {
                             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                                CameraApp(modifier=Modifier.padding(innerPadding),viewModel)
+                                CameraApp(modifier=Modifier.padding(innerPadding))
                             }
                         }
                     }
