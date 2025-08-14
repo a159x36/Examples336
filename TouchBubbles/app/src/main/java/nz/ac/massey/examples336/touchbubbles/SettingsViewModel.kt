@@ -1,16 +1,11 @@
 package nz.ac.massey.examples336.touchbubbles
 
-import android.app.Application
-import android.content.Context
-import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.core.DataStore
-import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.CoroutineScope
@@ -32,10 +27,10 @@ class SettingsViewModel(val dataStore: DataStore<Preferences>, prefschanged: () 
     private val _compress = MutableStateFlow(true)
     private val _dampening = MutableStateFlow(0f)
     private val _rigidity = MutableStateFlow(0f)
-    private val _small_min = MutableStateFlow(0)
-    private val _small_max = MutableStateFlow(0)
-    private val _large_min = MutableStateFlow(0)
-    private val _large_max = MutableStateFlow(0)
+    private val _smallMin = MutableStateFlow(0)
+    private val _smallMax = MutableStateFlow(0)
+    private val _largeMin = MutableStateFlow(0)
+    private val _largeMax = MutableStateFlow(0)
     private val _native = MutableStateFlow(false)
 
     private object PreferenceKeys {
@@ -62,10 +57,10 @@ class SettingsViewModel(val dataStore: DataStore<Preferences>, prefschanged: () 
                 _compress.value=preferences[PreferenceKeys.COMPRESS]?:true
                 _dampening.value=preferences[PreferenceKeys.DAMPENING]?:0.9f
                 _rigidity.value=preferences[PreferenceKeys.RIGIDITY]?:0.3f
-                _small_min.value=preferences[PreferenceKeys.SMALL_MIN]?:20
-                _small_max.value=preferences[PreferenceKeys.SMALL_MAX]?:30
-                _large_min.value=preferences[PreferenceKeys.LARGE_MIN]?:100
-                _large_max.value=preferences[PreferenceKeys.LARGE_MAX]?:200
+                _smallMin.value=preferences[PreferenceKeys.SMALL_MIN]?:20
+                _smallMax.value=preferences[PreferenceKeys.SMALL_MAX]?:30
+                _largeMin.value=preferences[PreferenceKeys.LARGE_MIN]?:100
+                _largeMax.value=preferences[PreferenceKeys.LARGE_MAX]?:200
                 _native.value=preferences[PreferenceKeys.NATIVE]?:false
                 prefschanged()
             }
@@ -78,10 +73,10 @@ class SettingsViewModel(val dataStore: DataStore<Preferences>, prefschanged: () 
     val compress=_compress.asStateFlow()
     val dampening=_dampening.asStateFlow()
     val rigidity=_rigidity.asStateFlow()
-    val small_min=_small_min.asStateFlow()
-    val small_max=_small_max.asStateFlow()
-    val large_min=_large_min.asStateFlow()
-    val large_max=_large_max.asStateFlow()
+    val smallMin=_smallMin.asStateFlow()
+    val smallMax=_smallMax.asStateFlow()
+    val largeMin=_largeMin.asStateFlow()
+    val largeMax=_largeMax.asStateFlow()
     val native=_native.asStateFlow()
 
     fun <T>setPref(key: Preferences.Key<T>, value: T) {
@@ -92,15 +87,15 @@ class SettingsViewModel(val dataStore: DataStore<Preferences>, prefschanged: () 
         }
     }
 
-    fun setnbubbles(n:Int) {setPref(PreferenceKeys.NBUBBLES,n) }
-    fun setnlarge(n:Int) {setPref(PreferenceKeys.NLARGE,n) }
-    fun setfps(n:Int) {setPref(PreferenceKeys.FPS,n) }
-    fun setcompress(n:Boolean) {setPref(PreferenceKeys.COMPRESS,n) }
-    fun setdampening(n:Float) {setPref(PreferenceKeys.DAMPENING,n) }
-    fun setrigidity(n:Float) {setPref(PreferenceKeys.RIGIDITY,n) }
-    fun setsmall_min(n:Int) {setPref(PreferenceKeys.SMALL_MIN,n) }
-    fun setsmall_max(n:Int) {setPref(PreferenceKeys.SMALL_MAX,n) }
-    fun setlarge_min(n:Int) {setPref(PreferenceKeys.LARGE_MIN,n) }
-    fun setlarge_max(n:Int)  {setPref(PreferenceKeys.LARGE_MAX,n) }
-    fun setnative(n:Boolean) {setPref(PreferenceKeys.NATIVE,n) }
+    fun setNBubbles(n:Int) {setPref(PreferenceKeys.NBUBBLES,n) }
+    fun setNLarge(n:Int) {setPref(PreferenceKeys.NLARGE,n) }
+    fun setFps(n:Int) {setPref(PreferenceKeys.FPS,n) }
+    fun setCompress(n:Boolean) {setPref(PreferenceKeys.COMPRESS,n) }
+    fun setDampening(n:Float) {setPref(PreferenceKeys.DAMPENING,n) }
+    fun setRigidity(n:Float) {setPref(PreferenceKeys.RIGIDITY,n) }
+    fun setSmallMin(n:Int) {setPref(PreferenceKeys.SMALL_MIN,n) }
+    fun setSmallMax(n:Int) {setPref(PreferenceKeys.SMALL_MAX,n) }
+    fun setlargeMin(n:Int) {setPref(PreferenceKeys.LARGE_MIN,n) }
+    fun setLargeMax(n:Int)  {setPref(PreferenceKeys.LARGE_MAX,n) }
+    fun setNative(n:Boolean) {setPref(PreferenceKeys.NATIVE,n) }
 }

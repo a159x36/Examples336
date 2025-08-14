@@ -1,5 +1,6 @@
 package nz.ac.massey.examples336.touchbubbles
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.hardware.Sensor
@@ -27,7 +28,7 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "se
 
 class MainActivity : ComponentActivity(),SensorEventListener {
 
-    var sensormanager:SensorManager?=null
+    lateinit var sensormanager:SensorManager
     var accelerometer:Sensor?=null
     lateinit var bubbles:Bubbles
 
@@ -41,17 +42,22 @@ class MainActivity : ComponentActivity(),SensorEventListener {
 
     override fun onResume() {
         super.onResume()
-        sensormanager?.registerListener(this,accelerometer,SensorManager.SENSOR_DELAY_NORMAL)
+        if(accelerometer!=null)
+            sensormanager.registerListener(this,accelerometer,SensorManager.SENSOR_DELAY_NORMAL)
     }
 
     override fun onPause() {
         super.onPause()
-        sensormanager?.unregisterListener(this)
+        if(accelerometer!=null)
+            sensormanager.unregisterListener(this)
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         System.loadLibrary("bubblemover")
+        sensormanager=getSystemService(SENSOR_SERVICE) as SensorManager
+        accelerometer=sensormanager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
         bubbles=Bubbles(viewmodel)
 
@@ -60,12 +66,12 @@ class MainActivity : ComponentActivity(),SensorEventListener {
                 Navigation(viewmodel, bubbles)
             }
         }
-        val sensormanager=getSystemService(SENSOR_SERVICE) as SensorManager
-        val sensors=sensormanager?.getSensorList(Sensor.TYPE_ALL)
-        for(sensor in sensors!!)
+
+        val sensors= sensormanager.getSensorList(Sensor.TYPE_ALL)
+        for(sensor in sensors)
             Log.i(TAG,"Sensor: ${sensor.name}, type: ${sensor.type}")
 
-        accelerometer= sensormanager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 

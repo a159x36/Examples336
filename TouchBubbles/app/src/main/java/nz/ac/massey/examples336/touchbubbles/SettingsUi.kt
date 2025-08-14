@@ -21,7 +21,6 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -49,7 +48,7 @@ fun SettingsSwitch(modifier:Modifier=Modifier, heading:String="Example Switch", 
     }
 }
 @Composable
-fun SettingsFloatSlider(modifier:Modifier=Modifier, heading:String="Example Slider", description:String="Slide me", state: State<Float>, min:Float=0f, max:Float=1f, steps:Int=100, logarithmic:Boolean=false, onChange:(Float)->Unit={}) {
+fun SettingsFloatSlider(modifier:Modifier=Modifier, heading:String="Example Slider", description:String="Slide me", state: State<Float>, min:Float=0f, max:Float=1f, steps:Int=100, onChange:(Float)->Unit={}) {
     Column(modifier = modifier.padding(16.dp),
         verticalArrangement = Arrangement.SpaceBetween) {
         Text(text = heading, style = AppTypography.titleMedium)
@@ -73,7 +72,7 @@ fun SettingsFloatSlider(modifier:Modifier=Modifier, heading:String="Example Slid
     }
 }
 
-val expo=1.001
+const val expo=1.001
 @Composable
 fun SettingsSlider(modifier:Modifier=Modifier, heading:String="Example Slider", description:String="Slide me", state: State<Int>, min:Float=0f, max:Float=100f, steps:Int=(max-min).toInt(), logarithmic:Boolean=false, onChange:(Int)->Unit={}) {
     Column(modifier = modifier.padding(16.dp),verticalArrangement = Arrangement.SpaceBetween) {
@@ -133,59 +132,59 @@ fun Settings (viewmodel: SettingsViewModel, navigateBack: () -> Unit ) {
                 heading = "Native",
                 description = "Use native code?",
                 state = viewmodel.native.collectAsStateWithLifecycle(),
-                onChange = { viewmodel.setnative(it) })
+                onChange = { viewmodel.setNative(it) })
 
             SettingsSlider(
                 heading = "Number Of Bubbles",
                 description = "How many bubbles do you want?",
                 state = viewmodel.nbubbles.collectAsStateWithLifecycle(),
-                onChange = { viewmodel.setnbubbles(it) },
+                onChange = { viewmodel.setNBubbles(it) },
                 min = 1f, max = 10000f, steps = 100, logarithmic = true
             )
             SettingsSlider(
                 heading = "Number Of Large Bubbles",
                 description = "How many large bubbles do you want?",
                 state = viewmodel.nlarge.collectAsStateWithLifecycle(),
-                onChange = { viewmodel.setnlarge(it); Log.d(TAG, "nlarge changed to $it") },
+                onChange = { viewmodel.setNLarge(it); Log.d(TAG, "nlarge changed to $it") },
                 min = 0f, max = 5f
             )
             SettingsSlider(
                 heading = "Small Bubble Min Size",
                 description = "Smallest size for a amall bubble",
-                state = viewmodel.small_min.collectAsStateWithLifecycle(),
+                state = viewmodel.smallMin.collectAsStateWithLifecycle(),
                 onChange = {
-                    viewmodel.setsmall_min(it)
-                    if (it > viewmodel.small_max.value) viewmodel.setsmall_max(it)
+                    viewmodel.setSmallMin(it)
+                    if (it > viewmodel.smallMax.value) viewmodel.setSmallMax(it)
                 },
                 min = 5f, max = 100f
             )
             SettingsSlider(
                 heading = "Small Bubble Max Size",
                 description = "Largest size for a small bubble",
-                state = viewmodel.small_max.collectAsStateWithLifecycle(),
+                state = viewmodel.smallMax.collectAsStateWithLifecycle(),
                 onChange = {
-                    viewmodel.setsmall_max(it)
-                    if (it < viewmodel.small_min.value) viewmodel.setsmall_min(it)
+                    viewmodel.setSmallMax(it)
+                    if (it < viewmodel.smallMin.value) viewmodel.setSmallMin(it)
                 },
                 min = 10f, max = 100f
             )
             SettingsSlider(
                 heading = "Large Bubble Min Size",
                 description = "Smallest size for a large bubble",
-                state = viewmodel.large_min.collectAsStateWithLifecycle(),
+                state = viewmodel.largeMin.collectAsStateWithLifecycle(),
                 onChange = {
-                    viewmodel.setlarge_min(it)
-                    if (it > viewmodel.large_max.value) viewmodel.setlarge_max(it)
+                    viewmodel.setlargeMin(it)
+                    if (it > viewmodel.largeMax.value) viewmodel.setLargeMax(it)
                 },
                 min = 50f, max = 300f
             )
             SettingsSlider(
                 heading = "Large Bubble Max Size",
                 description = "Largest size for a large bubble",
-                state = viewmodel.large_max.collectAsStateWithLifecycle(),
+                state = viewmodel.largeMax.collectAsStateWithLifecycle(),
                 onChange = {
-                    viewmodel.setlarge_max(it)
-                    if (it < viewmodel.large_min.value) viewmodel.setlarge_min(it)
+                    viewmodel.setLargeMax(it)
+                    if (it < viewmodel.largeMin.value) viewmodel.setlargeMin(it)
                 },
                 min = 50f, max = 300f
             )
@@ -193,26 +192,26 @@ fun Settings (viewmodel: SettingsViewModel, navigateBack: () -> Unit ) {
                 heading = "Dampening",
                 description = "How much dampening do you want?",
                 state = viewmodel.dampening.collectAsStateWithLifecycle(),
-                onChange = { viewmodel.setdampening(it) },
+                onChange = { viewmodel.setDampening(it) },
             )
             SettingsFloatSlider(
                 heading = "Rigidity",
                 description = "How much rigidity do you want?",
                 state = viewmodel.rigidity.collectAsStateWithLifecycle(),
-                onChange = { viewmodel.setrigidity(it) },
+                onChange = { viewmodel.setRigidity(it) },
             )
             SettingsSlider(
                 heading = "FPS",
                 description = "Frame per second?",
                 state = viewmodel.fps.collectAsStateWithLifecycle(),
-                onChange = { viewmodel.setfps(it) },
+                onChange = { viewmodel.setFps(it) },
                 min = 1f, max = 200f
             )
             SettingsSwitch(
                 heading = "Compress Bubbles",
                 description = "Compress bubbles?",
                 state = viewmodel.compress.collectAsStateWithLifecycle(),
-                onChange = { viewmodel.setcompress(it) }
+                onChange = { viewmodel.setCompress(it) }
             )
         }
     }

@@ -2,15 +2,10 @@ package nz.ac.massey.examples336.touchbubbles
 
 import android.content.Context
 import android.graphics.BitmapFactory
-import android.util.Log.i
-import android.util.Log.v
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.IntOffset
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.nio.FloatBuffer
 import kotlin.math.sqrt
 
 
@@ -60,8 +55,8 @@ class Bubbles(viewModel: SettingsViewModel) {
         }
         for (i in 0..(viewmodel.nbubbles.value - 1) * 6 step 6) {
             if(i!=grabbedBubbleIndex) {
-                var newx = bubbleData[i + X] + bubbleData[i + VX] * dt * 100
-                var newy = bubbleData[i + Y] + bubbleData[i + VY] * dt * 100
+                val newx = bubbleData[i + X] + bubbleData[i + VX] * dt * 100
+                val newy = bubbleData[i + Y] + bubbleData[i + VY] * dt * 100
                 bubbleData[i + X] =
                     clampWithAction(newx, bubbleData[i + CR], csize.width - bubbleData[i + CR]) {
                         bubbleData[i + VX] *= -dampening
@@ -166,14 +161,13 @@ class Bubbles(viewModel: SettingsViewModel) {
         bubbleData = FloatArray(viewmodel.nbubbles.value*6)
         val nsmall=viewmodel.nbubbles.value-viewmodel.nlarge.value
         for (i in 0.. (viewmodel.nbubbles.value-1)*6 step 6) {
-            val r: Float
 
             bubbleData[i+VX]=-5+ (0..100).random()/10f
             bubbleData[i+VY]=-5 +(0..100).random()/10f
-            r = if(i<nsmall*6)
-                ((1..viewmodel.small_max.value).random()+viewmodel.small_min.value).toFloat()
+            val r: Float = if(i<nsmall*6)
+                ((1..viewmodel.smallMax.value).random()+viewmodel.smallMin.value).toFloat()
             else
-                ((1..viewmodel.large_max.value).random()+viewmodel.large_min.value).toFloat()
+                ((1..viewmodel.largeMax.value).random()+viewmodel.largeMin.value).toFloat()
             bubbleData[i+RR]=r
             bubbleData[i+CR]=r
             bubbleData[i+X]=(0..((csize.width-2*r).toInt())).random() + r

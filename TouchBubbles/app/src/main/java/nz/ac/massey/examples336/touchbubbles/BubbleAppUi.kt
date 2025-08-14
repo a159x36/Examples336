@@ -1,7 +1,5 @@
 package nz.ac.massey.examples336.touchbubbles
 
-import android.annotation.SuppressLint
-import android.app.Application
 import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -39,7 +37,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
-import androidx.datastore.dataStore
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -50,7 +47,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import nz.ac.massey.examples336.touchbubbles.MainActivity
 
 var framenumber = mutableIntStateOf(1)
 
@@ -120,7 +116,7 @@ fun Preview() {
     val context = LocalContext.current
     lateinit var bubbles:Bubbles
 
-    val viewmodel: SettingsViewModel = viewModel(factory= SettingsViewModelFactory(context.dataStore) {//SettingsViewModel(LocalContext.current) {
+    val viewmodel: SettingsViewModel = viewModel(factory= SettingsViewModelFactory(context.dataStore) {
         CoroutineScope(Dispatchers.IO).launch {
             bubbles.init(context)
         }
