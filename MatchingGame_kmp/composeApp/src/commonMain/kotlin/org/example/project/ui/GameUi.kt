@@ -162,7 +162,7 @@ fun AppBar(viewModel:MatchingGameViewModel, showDialog: MutableState<Boolean>, m
 
 val ROWHEIGHT=128.dp
 @Composable
-fun MatchGame( modifier: Modifier = Modifier, viewModel: MatchingGameViewModel=viewModel()) {
+fun MatchGame( modifier: Modifier = Modifier, viewModel: MatchingGameViewModel=viewModel {MatchingGameViewModel()}) {
     val showDialog = rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsState()

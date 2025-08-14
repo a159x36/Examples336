@@ -99,7 +99,7 @@ fun AppBar(showDialog: MutableState<Boolean>?=null, modifier:Modifier, navContro
 
 @Preview
 @Composable
-fun Navigation(viewmodel: SettingsViewModel = viewModel()) {
+fun Navigation(viewmodel: SettingsViewModel = viewModel {SettingsViewModel()}) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
