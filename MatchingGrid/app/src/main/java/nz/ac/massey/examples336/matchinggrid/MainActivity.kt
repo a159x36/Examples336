@@ -238,9 +238,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MatchGame(modifier = Modifier.padding(innerPadding))
-                }
+                MatchGame()
             }
         }
         if (savedInstanceState != null) {
