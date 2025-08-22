@@ -1,8 +1,17 @@
 package nz.ac.massey.examples336.matchinggrid.ui
 
+import android.R.attr.angle
+import android.R.attr.onClick
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.Spring.DampingRatioHighBouncy
+import androidx.compose.animation.core.Spring.DampingRatioLowBouncy
+import androidx.compose.animation.core.Spring.DampingRatioMediumBouncy
+import androidx.compose.animation.core.Spring.StiffnessLow
+import androidx.compose.animation.core.Spring.StiffnessMediumLow
+import androidx.compose.animation.core.Spring.StiffnessVeryLow
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -30,6 +39,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -100,22 +110,19 @@ fun SureDialog(modifier: Modifier = Modifier, onConfirmation: () -> Unit, show: 
 @Composable
 fun TurningButton( viewModel: MatchingGameViewModel, tile:Tile, modifier: Modifier = Modifier) {
     val shown=tile.shown.collectAsState().value
-    val turned=tile.turned.collectAsState().value
     val angle by animateFloatAsState(
-        targetValue = if (shown || turned) 0f else 180f,
-        animationSpec =  tween(durationMillis = 1000),
-        //spring( stiffness = StiffnessMediumLow,
-        //    dampingRatio = DampingRatioMediumBouncy),
+        targetValue = if (shown) 0f else 180f,
+        animationSpec =  spring( stiffness = StiffnessVeryLow, dampingRatio = DampingRatioLowBouncy),
     )
-    Button(
+    Surface(
         shape = RoundedCornerShape(4.dp),
+        color = ButtonDefaults.buttonColors().containerColor,
         onClick = { tile.buttonClick(/*uiState,*/viewModel) },
         modifier = modifier
             .fillMaxSize()
             .padding(4.dp)
             .graphicsLayer { rotationY = angle; clip = false },
-        contentPadding = PaddingValues(0.dp),
-        elevation = ButtonDefaults.buttonElevation(8.dp),
+
     ) {
         if ( (angle <= 90f) ) {
             Image(

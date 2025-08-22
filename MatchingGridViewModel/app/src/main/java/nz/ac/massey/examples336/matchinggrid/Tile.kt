@@ -7,12 +7,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+
+
 class Tile {
     var value = 0
     private val _shown = MutableStateFlow<Boolean>(false)
     val shown = _shown.asStateFlow()
-    private val _turned = MutableStateFlow<Boolean>(false)
-    val turned = _turned.asStateFlow()
+
+    private var matched=false
 
     suspend fun turnback() {
         delay(800)
@@ -22,8 +24,8 @@ class Tile {
 
     fun init() {
         _shown.value = false
-        _turned.value = false
         value=0
+        matched=false
     }
 
     fun buttonClick(viewmodel: MatchingGameViewModel) {
@@ -31,7 +33,7 @@ class Tile {
         var newlt = uiState.lastTile
         var newscore = uiState.score
         var newnummatched = uiState.numMatched
-        if (!turned.value && !shown.value) {
+        if (!matched && !shown.value) {
             newscore++
             if (uiState.lastTile == null) {
                 newlt = this
@@ -39,13 +41,13 @@ class Tile {
             } else {
                 uiState.lastTile.let {
                     if (it.value == value) {
-                        _turned.value = true
-                        it._turned.value = true
+                        matched = true
+                        _shown.value = true
+                        it.matched = true
                         newnummatched++
                         newlt = null
                     } else {
                         _shown.value = true
-
                         CoroutineScope(Dispatchers.Default).launch {
                             turnback()
                         }
