@@ -1,6 +1,7 @@
 package nz.ac.massey.examples336.simplebubbles
 
 import android.content.res.Configuration
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -29,7 +30,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -106,7 +110,8 @@ fun BubbleApp(  viewModel: BubbleViewModel = viewModel()) {
 
 @Composable
 fun Bubbles(modifier: Modifier = Modifier, viewModel: BubbleViewModel) {
-
+//    val context=LocalContext.current
+//    val bubbleImage = remember { BitmapFactory.decodeResource(context.resources,R.drawable.bubble).asImageBitmap() }
     var doUpdates = remember { false }
     LifecycleResumeEffect(Unit)  {
         doUpdates=true
@@ -147,9 +152,13 @@ fun Bubbles(modifier: Modifier = Modifier, viewModel: BubbleViewModel) {
         viewModel.frameNumber.intValue.let { inv ->
             for(bubble in viewModel.bubbles) {
                 val r = bubble.r
-//                val offsetTL = IntOffset((bubble.x-r).toInt(),(bubble.y-r).toInt())
-//                val size = IntSize(r.toInt() * 2, r.toInt() * 2)
-//                drawImage(image = viewModel.bubbles.bubbleImage, dstSize = size, dstOffset = offsetTL)
+
+                /* Uncomment for Bubble Images
+                val cf= ColorFilter.lighting(add=Color.DarkGray,multiply=bubble.color)
+                val offsetTL = IntOffset((bubble.x-r).toInt(),(bubble.y-r).toInt())
+                val size = IntSize(r.toInt() * 2, r.toInt() * 2)
+                drawImage(image = bubbleImage, dstSize = size, dstOffset = offsetTL, colorFilter = cf)
+                */
 
                 val offset = Offset(bubble.x,bubble.y)
                 val inner = r*0.75f
@@ -158,6 +167,8 @@ fun Bubbles(modifier: Modifier = Modifier, viewModel: BubbleViewModel) {
                 val col=bubble.color
                 drawCircle(col, radius = r.toFloat(), center = offset , style = Stroke(8f))
                 drawArc(col, startAngle = 300f, sweepAngle = 45f, useCenter = false, topLeft = inneroffset, size = size1, style = Stroke(8f))
+
+
             }
         }
     }

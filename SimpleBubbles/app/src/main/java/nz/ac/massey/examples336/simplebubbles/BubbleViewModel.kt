@@ -17,9 +17,7 @@ class BubbleViewModel(): ViewModel() {
     var frameNumber = mutableIntStateOf(1)
     var canvasSize by mutableStateOf(Size(0f,0f))
     data class Bubble(var x:Float, var y:Float, var vx:Float, var vy:Float, var r:Float=100f, var color:Color)
-
     val NBUBBLES=100
-   // val bubbleImage: ImageBitmap = BitmapFactory.decodeResource(context.resources,R.drawable.bubble).asImageBitmap()
 
     init {
         init()
@@ -58,6 +56,9 @@ class BubbleViewModel(): ViewModel() {
             b.vx += dt * mGravityX * 10
             b.vy += dt * mGravityY * 10
         }
+
+    //    val t=System.nanoTime()
+    //    while(System.nanoTime()-t<200000000);
     }
 
     fun init(size:Size=Size(500f,500f)) {
