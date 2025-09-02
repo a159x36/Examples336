@@ -15,9 +15,6 @@ import androidx.activity.viewModels
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import nz.ac.massey.examples336.touchbubbles.theme.ui.AppTheme
 
 
@@ -34,9 +31,7 @@ class MainActivity : ComponentActivity(),SensorEventListener {
 
     val viewmodel:SettingsViewModel by viewModels {
         SettingsViewModelFactory(dataStore) {
-            CoroutineScope(Dispatchers.IO).launch {
-                bubbles.init(this@MainActivity)
-            }
+            bubbles.init(this@MainActivity)
         }
     }
 
