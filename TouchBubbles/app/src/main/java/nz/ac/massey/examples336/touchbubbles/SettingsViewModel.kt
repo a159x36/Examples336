@@ -32,6 +32,7 @@ class SettingsViewModel(val dataStore: DataStore<Preferences>, prefschanged: () 
     private val _largeMin = MutableStateFlow(0)
     private val _largeMax = MutableStateFlow(0)
     private val _native = MutableStateFlow(false)
+    private val _usedirect = MutableStateFlow(false)
 
     private object PreferenceKeys {
         val NLARGE=intPreferencesKey("nlarge")
@@ -45,6 +46,7 @@ class SettingsViewModel(val dataStore: DataStore<Preferences>, prefschanged: () 
         val LARGE_MIN=intPreferencesKey("large_min")
         val LARGE_MAX=intPreferencesKey("large_max")
         val NATIVE=booleanPreferencesKey("native")
+        val USEDIRECT=booleanPreferencesKey("usedirect")
     }
 
     init {
@@ -62,6 +64,7 @@ class SettingsViewModel(val dataStore: DataStore<Preferences>, prefschanged: () 
                 _largeMin.value=preferences[PreferenceKeys.LARGE_MIN]?:100
                 _largeMax.value=preferences[PreferenceKeys.LARGE_MAX]?:200
                 _native.value=preferences[PreferenceKeys.NATIVE]?:false
+                _usedirect.value=preferences[PreferenceKeys.USEDIRECT]?:false
                 prefschanged()
             }
         }
@@ -78,6 +81,7 @@ class SettingsViewModel(val dataStore: DataStore<Preferences>, prefschanged: () 
     val largeMin=_largeMin.asStateFlow()
     val largeMax=_largeMax.asStateFlow()
     val native=_native.asStateFlow()
+    val usedirect=_usedirect.asStateFlow()
 
     fun <T>setPref(key: Preferences.Key<T>, value: T) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -98,4 +102,5 @@ class SettingsViewModel(val dataStore: DataStore<Preferences>, prefschanged: () 
     fun setlargeMin(n:Int) {setPref(PreferenceKeys.LARGE_MIN,n) }
     fun setLargeMax(n:Int)  {setPref(PreferenceKeys.LARGE_MAX,n) }
     fun setNative(n:Boolean) {setPref(PreferenceKeys.NATIVE,n) }
+    fun setUseDirect(n:Boolean) {setPref(PreferenceKeys.USEDIRECT,n) }
 }

@@ -133,6 +133,11 @@ fun Settings (viewmodel: SettingsViewModel, navigateBack: () -> Unit ) {
                 description = "Use native code?",
                 state = viewmodel.native.collectAsStateWithLifecycle(),
                 onChange = { viewmodel.setNative(it) })
+            SettingsSwitch(
+                heading = "Direct Buffers",
+                description = "Use Direct Buffers?",
+                state = viewmodel.usedirect.collectAsStateWithLifecycle(),
+                onChange = { viewmodel.setUseDirect(it) })
 
             SettingsSlider(
                 heading = "Number Of Bubbles",

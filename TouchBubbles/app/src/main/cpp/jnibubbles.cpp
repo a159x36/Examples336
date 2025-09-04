@@ -12,15 +12,10 @@
 #define R 4
 #define CR 5
 
-// native code to update the bubble array
-extern "C" JNIEXPORT void JNICALL Java_nz_ac_massey_examples336_touchbubbles_Bubbles_nativeUpdate(JNIEnv *env, jobject obj, jint nb,  jint touched,
-                                                                                          jint width, jint height, jfloat dt,
-                                                                                          jfloat gx, jfloat gy,
-                                                                                          jfloatArray bubblearray,
-                                                                                          jfloat rigidity, jfloat dampening,
-                                                                                          jboolean compress) {
-    jboolean iscopy;
-    float *mBubbles = env->GetFloatArrayElements(bubblearray,&iscopy);
+
+void update(int nb,  int touched, int width, int height, float dt, float gx, float gy, float *mBubbles, float rigidity, float dampening,
+                                                                                          int compress) {
+
     for (int i=0;i<nb*6;i+=6) {
         if(i!=touched) {
             float *bubble=mBubbles+i;
@@ -92,6 +87,30 @@ extern "C" JNIEXPORT void JNICALL Java_nz_ac_massey_examples336_touchbubbles_Bub
         }
 
     }
-    env->ReleaseFloatArrayElements(bubblearray,mBubbles,0);
+  //
 
+}
+
+// native code to update the bubble float buffer
+extern "C" JNIEXPORT void JNICALL Java_nz_ac_massey_examples336_touchbubbles_Bubbles_nativeUpdateBuffer(JNIEnv *env, jobject obj, jint nb,  jint touched,
+                                                                                                  jint width, jint height, jfloat dt,
+                                                                                                  jfloat gx, jfloat gy,
+                                                                                                  jobject bubblebuffer,
+                                                                                                  jfloat rigidity, jfloat dampening,
+                                                                                                  jboolean compress) {
+    float *mBubbles = (float *)env->GetDirectBufferAddress(bubblebuffer);
+    update(nb, touched, width, height, dt, gx, gy, mBubbles, rigidity, dampening, compress);
+}
+
+// native code to update the bubble array
+extern "C" JNIEXPORT void JNICALL Java_nz_ac_massey_examples336_touchbubbles_Bubbles_nativeUpdateArray(JNIEnv *env, jobject obj, jint nb,  jint touched,
+                                                                                                  jint width, jint height, jfloat dt,
+                                                                                                  jfloat gx, jfloat gy,
+                                                                                                  jfloatArray bubblearray,
+                                                                                                  jfloat rigidity, jfloat dampening,
+                                                                                                  jboolean compress) {
+    jboolean iscopy;
+    float *mBubbles = env->GetFloatArrayElements(bubblearray,&iscopy);
+    update(nb, touched, width, height, dt, gx, gy, mBubbles, rigidity, dampening, compress);
+    env->ReleaseFloatArrayElements(bubblearray,mBubbles,0);
 }

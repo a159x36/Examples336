@@ -16,11 +16,6 @@ android {
         versionCode=1
         versionName="1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        externalNativeBuild {
-            cmake {
-                cppFlags += ""
-            }
-        }
     }
     buildTypes {
         release {
@@ -47,10 +42,10 @@ android {
     externalNativeBuild {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")
-            version = "3.22.1"
+            version = "4.1.0"
         }
     }
-    ndkVersion = "27.0.12077973"
+    ndkVersion = "28.2.13676358"
 
 }
 

@@ -6,6 +6,9 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.IntOffset
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.nio.FloatBuffer
 import kotlin.math.sqrt
 
 
@@ -16,8 +19,44 @@ const val VY=3
 const val RR=4
 const val CR=5
 
+
+abstract class BubbleData {
+    abstract operator fun set(index:Int, value: Float)
+    abstract operator fun get(index:Int):Float
+}
+
+class BubbleDataFloatBuffer(size: Int) : BubbleData() {
+    val bubbleData: FloatBuffer = ByteBuffer.allocateDirect(size*4).order(ByteOrder.nativeOrder()).asFloatBuffer()
+    override fun set(index: Int, value: Float) {
+        bubbleData.put(index,value)
+    }
+    override fun get(index: Int): Float {
+        return bubbleData[index]
+    }
+}
+
+class BubbleDataFloatArray(size: Int) : BubbleData() {
+    val bubbleData=FloatArray(size)
+    override fun set(index: Int, value: Float) {
+        bubbleData[index]=value
+    }
+    override fun get(index: Int): Float {
+        return bubbleData[index]
+    }
+}
+
 class Bubbles(viewModel: SettingsViewModel) {
-    private var bubbleData = FloatArray(200*6)
+
+
+    private lateinit var bubbleData:BubbleData
+
+    /*
+    operator fun FloatBuffer.set(index:Int, value: Float) {
+        this.put(index,value)
+    }
+
+     */
+
 
     var mGravityX=0f
     var mGravityY=9.8f
@@ -50,7 +89,10 @@ class Bubbles(viewModel: SettingsViewModel) {
         val dampening=viewmodel.dampening.value
         val rigidity=viewmodel.rigidity.value
         if(viewmodel.native.value) {
-            nativeUpdate(viewmodel.nbubbles.value,grabbedBubbleIndex,csize.width.toInt(),csize.height.toInt(),dt,mGravityX,mGravityY,bubbleData,rigidity,dampening,viewmodel.compress.value)
+            if(viewmodel.usedirect.value)
+                nativeUpdateBuffer(viewmodel.nbubbles.value,grabbedBubbleIndex,csize.width.toInt(),csize.height.toInt(),dt,mGravityX,mGravityY,(bubbleData as BubbleDataFloatBuffer).bubbleData,rigidity,dampening,viewmodel.compress.value)
+            else
+                nativeUpdateArray(viewmodel.nbubbles.value,grabbedBubbleIndex,csize.width.toInt(),csize.height.toInt(),dt,mGravityX,mGravityY,(bubbleData as BubbleDataFloatArray).bubbleData,rigidity,dampening,viewmodel.compress.value)
             return
         }
         for (i in 0..(viewmodel.nbubbles.value - 1) * 6 step 6) {
@@ -157,8 +199,12 @@ class Bubbles(viewModel: SettingsViewModel) {
     }
 
     fun init(c:Context) {
-        bubble =BitmapFactory.decodeResource(c.resources,R.drawable.bubble).asImageBitmap()
-        bubbleData = FloatArray(viewmodel.nbubbles.value*6)
+        bubble = BitmapFactory.decodeResource(c.resources,R.drawable.bubble).asImageBitmap()
+     //   bubbleData = FloatArray(viewmodel.nbubbles.value*6)
+        bubbleData = if(viewmodel.usedirect.value)
+            BubbleDataFloatBuffer(viewmodel.nbubbles.value*6)
+        else
+            BubbleDataFloatArray(viewmodel.nbubbles.value*6)
         val nsmall=viewmodel.nbubbles.value-viewmodel.nlarge.value
         for (i in 0.. (viewmodel.nbubbles.value-1)*6 step 6) {
 
@@ -175,6 +221,7 @@ class Bubbles(viewModel: SettingsViewModel) {
         }
     }
 
-    external fun nativeUpdate(nb:Int, touched:Int, width:Int,height:Int,dt:Float,gx:Float,gy:Float,bubbles:FloatArray, rigidity:Float, dampening:Float, compress:Boolean)
+    external fun nativeUpdateArray(nb:Int, touched:Int, width:Int,height:Int,dt:Float,gx:Float,gy:Float,bubbles:FloatArray, rigidity:Float, dampening:Float, compress:Boolean)
+    external fun nativeUpdateBuffer(nb:Int, touched:Int, width:Int,height:Int,dt:Float,gx:Float,gy:Float,bubbles:FloatBuffer, rigidity:Float, dampening:Float, compress:Boolean)
 
 }
