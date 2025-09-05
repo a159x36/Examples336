@@ -3,6 +3,7 @@
 //
 #include <jni.h>
 #include <cmath>
+#include <android/log.h>
 
 // offsets within the bubblearray
 #define X 0
@@ -13,12 +14,12 @@
 #define CR 5
 
 
-void update(int nb,  int touched, int width, int height, float dt, float gx, float gy, float *mBubbles, float rigidity, float dampening,
+void update(int nb,  int touched, int width, int height, float dt, float gx, float gy, float *bubbles, float rigidity, float dampening,
                                                                                           int compress) {
 
     for (int i=0;i<nb*6;i+=6) {
         if(i!=touched) {
-            float *bubble=mBubbles+i;
+            float *bubble=bubbles+i;
             bubble[X] += bubble[VX] * dt * 100;
             bubble[Y] += bubble[VY] * dt * 100;
 
@@ -46,13 +47,13 @@ void update(int nb,  int touched, int width, int height, float dt, float gx, flo
     float x,y,r,x1,y1,r1,d,d1;
     float *bubble,*bubble1;
     for (int i=0;i<nb*6;i+=6) {
-        bubble=mBubbles+i;
+        bubble=bubbles+i;
         x=bubble[X];
         y=bubble[Y];
         r=bubble[R];
         bubble[CR]=r;
         for(int j=i+6;j<nb*6;j+=6) {
-            bubble1=mBubbles+j;
+            bubble1=bubbles+j;
             x1=bubble1[X];
             y1=bubble1[Y];
             r1=bubble1[R];
@@ -98,8 +99,8 @@ extern "C" JNIEXPORT void JNICALL Java_nz_ac_massey_examples336_touchbubbles_Bub
                                                                                                   jobject bubblebuffer,
                                                                                                   jfloat rigidity, jfloat dampening,
                                                                                                   jboolean compress) {
-    float *mBubbles = (float *)env->GetDirectBufferAddress(bubblebuffer);
-    update(nb, touched, width, height, dt, gx, gy, mBubbles, rigidity, dampening, compress);
+    float *bubbles = (float *)env->GetDirectBufferAddress(bubblebuffer);
+    update(nb, touched, width, height, dt, gx, gy, bubbles, rigidity, dampening, compress);
 }
 
 // native code to update the bubble array
@@ -110,7 +111,8 @@ extern "C" JNIEXPORT void JNICALL Java_nz_ac_massey_examples336_touchbubbles_Bub
                                                                                                   jfloat rigidity, jfloat dampening,
                                                                                                   jboolean compress) {
     jboolean iscopy;
-    float *mBubbles = env->GetFloatArrayElements(bubblearray,&iscopy);
-    update(nb, touched, width, height, dt, gx, gy, mBubbles, rigidity, dampening, compress);
-    env->ReleaseFloatArrayElements(bubblearray,mBubbles,0);
+    float *bubbles = env->GetFloatArrayElements(bubblearray,&iscopy);
+ //   __android_log_print(ANDROID_LOG_DEBUG,"Update","copied %d",iscopy);
+    update(nb, touched, width, height, dt, gx, gy, bubbles, rigidity, dampening, compress);
+    env->ReleaseFloatArrayElements(bubblearray,bubbles,0);
 }

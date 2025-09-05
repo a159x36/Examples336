@@ -26,7 +26,7 @@ abstract class BubbleData {
 }
 
 class BubbleDataFloatBuffer(size: Int) : BubbleData() {
-    val bubbleData: FloatBuffer = ByteBuffer.allocateDirect(size*4).order(ByteOrder.nativeOrder()).asFloatBuffer()
+    val bubbleData = ByteBuffer.allocateDirect(size*4).order(ByteOrder.nativeOrder()).asFloatBuffer()
     override fun set(index: Int, value: Float) {
         bubbleData.put(index,value)
     }
