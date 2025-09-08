@@ -14,70 +14,71 @@ class CourseViewModelFactory(val context: Context) : ViewModelProvider.Factory {
         return CourseViewModel(context) as T
     }
 }
-class CourseViewModel(context:Context) : ViewModel() {
+
+class CourseViewModel(context:Context) : ViewModel(), CourseInterface {
     val mDao: UniDao
     init {
         val db = getDatabase(context)
         mDao = db.UniDao()
     }
 
-    fun getAllCourses() = mDao.allCourses()
+    override fun getAllCourses() = mDao.allCourses()
 
-    fun getAllLecturers() = mDao.allLecturers()
+    override fun getAllLecturers() = mDao.allLecturers()
 
-    fun getCourseInfo(lect: String) = mDao.getCourseInfo(lect)
+    override fun getCourseInfo(lect: String) = mDao.getCourseInfo(lect)
 
-    fun newOffering(lectid: Long, courseid: Long, year: Int, semester: Int) {
+    override fun newOffering(lectid: Long, courseid: Long, year: Int, semester: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             mDao.insert(CourseOffering(courseId = courseid, lecturerId = lectid, year = year, semester = semester))
         }
     }
 
-    fun deleteOffering(id: Long) {
+    override fun deleteOffering(id: Long) {
         CoroutineScope(Dispatchers.IO).launch {
             mDao.deleteOffering(id = id)
         }
     }
 
-    fun allOfferings() = mDao.allOfferings()
+    override fun allOfferings() = mDao.allOfferings()
 
-    fun updateOffering(id: Long, lectid: Long, courseid: Long, year: Int, semester: Int) {
+    override fun updateOffering(id: Long, lectid: Long, courseid: Long, year: Int, semester: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             mDao.updateOffering(id = id, courseId = courseid, lecturerId = lectid, year = year, semester = semester)
         }
     }
 
-    fun newCourse( name: String, location: String) {
+    override fun newCourse(name: String, location: String) {
         CoroutineScope(Dispatchers.IO).launch {
             mDao.insert(Course(name = name, location = location))
         }
     }
 
-    fun newLecturer(name: String, phone: String, office: String) {
+    override fun newLecturer(name: String, phone: String, office: String) {
         CoroutineScope(Dispatchers.IO).launch {
             mDao.insert(Lecturer(name = name, phone = phone, office = office))
         }
     }
 
-    fun updateLecturer (id: Long, name: String, phone: String, office: String) {
+    override fun updateLecturer (id: Long, name: String, phone: String, office: String) {
         CoroutineScope(Dispatchers.IO).launch {
             mDao.updateLecturer(id = id, name = name, phone = phone, office = office)
         }
     }
 
-    fun updateCourse (id: Long, name: String, location: String) {
+    override fun updateCourse (id: Long, name: String, location: String) {
         CoroutineScope(Dispatchers.IO).launch {
             mDao.updateCourse(id = id, name = name, location = location)
         }
     }
 
-    fun deleteLecturer (id: Long) {
+    override fun deleteLecturer (id: Long) {
         CoroutineScope(Dispatchers.IO).launch {
             mDao.deleteLecturer(id = id)
         }
     }
 
-    fun deleteCourse (id: Long) {
+    override fun deleteCourse (id: Long) {
         CoroutineScope(Dispatchers.IO).launch {
             mDao.deleteCourse(id = id)
         }
