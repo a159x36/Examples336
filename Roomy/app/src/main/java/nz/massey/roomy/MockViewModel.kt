@@ -10,11 +10,17 @@ class MockViewModel() : ViewModel(), CourseInterface {
     val courses=mutableListOf(
             Course(0, "159236", "alb"),
             Course(1, "159336", "alb"),
-            Course(2, "159361", "alb"))
+            Course(2, "159361", "alb"),
+            Course(3, "159731", "alb"),
+            Course(4, "159261", "alb"),)
     val offerings=mutableListOf(
             CourseOffering(0, 0, 0, 2025, 2),
             CourseOffering(1, 1, 0, 2025, 2),
-            CourseOffering(2, 2, 1, 2025, 2),)
+            CourseOffering(2, 2, 1, 2025, 2),
+            CourseOffering(3, 3, 0, 2025, 1),
+            CourseOffering(4, 4, 0, 2025, 1),
+            CourseOffering(5, 0, 0, 2024, 2),
+            CourseOffering(6, 1, 0, 2024, 2),)
 
     override fun getAllCourses()= MutableStateFlow(courses)
     override fun getAllLecturers()= MutableStateFlow(lects)
@@ -24,6 +30,10 @@ class MockViewModel() : ViewModel(), CourseInterface {
         for(o in offerings) {
             if(lects[o.lecturerId.toInt()].name==lect) info.add(CourseInfo(o.id, courses[o.courseId.toInt()].name,lect,o.year,o.semester))
         }
+        if(orderby=="coursename") info.sortBy { it.coursename }
+        if(orderby=="year") info.sortBy { it.year }
+        if(orderby=="semester") info.sortBy { it.semester }
+        if(!asc) info.reverse()
         return MutableStateFlow(info)
     }
     override fun newLecturer(name: String, phone: String, office: String) {
