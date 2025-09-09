@@ -128,8 +128,9 @@ fun Preview() {
 @Composable
 fun BubbleApp(navController: NavHostController,viewmodel: SettingsViewModel,  bubbles:Bubbles, init: () -> Unit = {}) {
     val showDialog = rememberSaveable { mutableStateOf(false) }
+    val context = LocalContext.current
     SureDialog({
-        init()
+        bubbles.init(context)
     }, showDialog)
     Scaffold(
         topBar = { AppBar(showDialog, Modifier, navController) },
