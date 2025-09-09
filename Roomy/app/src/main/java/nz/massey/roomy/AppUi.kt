@@ -1,5 +1,6 @@
 package nz.massey.roomy
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -290,8 +291,8 @@ fun Dropdown(label:String, names: List<String>, selected: String, modifier: Modi
     }
 }
 @Composable
-fun RowScope.TitleText(t:String) {
-    Text(t, style = AppTypography.titleMedium, modifier = Modifier.weight(1f))
+fun RowScope.TitleText(t:String, onClick: () -> Unit={}) {
+    Text(t, style = AppTypography.titleMedium, modifier = Modifier.weight(1f).clickable(onClick = onClick))
 }
 
 @Preview
@@ -299,11 +300,15 @@ fun RowScope.TitleText(t:String) {
 fun Offerings(modifier: Modifier=Modifier, viewmodel: CourseInterface = MockViewModel(), navController: NavHostController=NavHostController(LocalContext.current)) {
 
     var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
+    var orderby by rememberSaveable { mutableStateOf("year") }
+    var asc by rememberSaveable { mutableStateOf(true) }
     val lects = viewmodel.getAllLecturers().collectAsState(emptyList()).value
     val selected =
         if (selectedIndex < lects.size) lects[selectedIndex].name else "Select Lecturer"
-    val courseInfo = viewmodel.getCourseInfo(selected).collectAsState(emptyList()).value
+    val courseInfo = viewmodel.getCourseInfo(selected, orderby, asc).collectAsState(emptyList()).value
     val offerings = viewmodel.allOfferings().collectAsState(emptyList()).value
+
+    Log.d("Offerings",orderby+courseInfo.toString())
 
     Scaffold(
         floatingActionButton = {
@@ -321,11 +326,12 @@ fun Offerings(modifier: Modifier=Modifier, viewmodel: CourseInterface = MockView
         ) {
             Dropdown("Lecturer: ", lects.map { it.name }, selected, modifier = Modifier.padding(16.dp))
             { selectedIndex = it }
+            val updown=if(asc) "▲" else "▼"
             Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
-                TitleText("Course")
+                TitleText("Course"+if(orderby=="coursename") updown else "", onClick={ orderby="coursename";asc=!asc })
                 TitleText("Lecturer")
-                TitleText("Year")
-                TitleText("Semester")
+                TitleText("Year"+if(orderby=="year") updown else "", onClick={ orderby="year";asc=!asc })
+                TitleText("Semester"+if(orderby=="semester") updown else "", onClick={ orderby="semester";asc=!asc })
             }
             LazyColumn(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
                 items(courseInfo.size, key = { courseInfo[it].id }) {

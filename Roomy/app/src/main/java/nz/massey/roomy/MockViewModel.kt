@@ -5,8 +5,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 class MockViewModel() : ViewModel(), CourseInterface {
     val lects=mutableListOf(
-            Lecturer(0, "martin", "123", "ms3.88"),
-            Lecturer(1, "daniel", "456", "ms3.92"))
+            Lecturer(0, "Martin", "123", "ms3.88"),
+            Lecturer(1, "Daniel", "456", "ms3.92"))
     val courses=mutableListOf(
             Course(0, "159236", "alb"),
             Course(1, "159336", "alb"),
@@ -19,7 +19,7 @@ class MockViewModel() : ViewModel(), CourseInterface {
     override fun getAllCourses()= MutableStateFlow(courses)
     override fun getAllLecturers()= MutableStateFlow(lects)
     override fun allOfferings()= MutableStateFlow(offerings)
-    override fun getCourseInfo(lect: String): MutableStateFlow<List<CourseInfo>> {
+    override fun getCourseInfo(lect: String, orderby: String, asc: Boolean): MutableStateFlow<List<CourseInfo>> {
         val info=mutableListOf<CourseInfo>()
         for(o in offerings) {
             if(lects[o.lecturerId.toInt()].name==lect) info.add(CourseInfo(o.id, courses[o.courseId.toInt()].name,lect,o.year,o.semester))

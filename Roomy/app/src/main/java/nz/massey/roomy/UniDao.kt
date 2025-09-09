@@ -1,5 +1,6 @@
 package nz.massey.roomy
 
+import android.icu.text.UnicodeSet.CASE
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -10,10 +11,10 @@ interface UniDao {
     @Insert
     fun insert(course: Course): Long
 
-    @Query("SELECT * FROM course")
+    @Query("SELECT * FROM course ORDER BY name")
     fun allCourses(): Flow<List<Course>>
 
-    @Query("SELECT * FROM lecturer")
+    @Query("SELECT * FROM lecturer ORDER BY name")
     fun allLecturers(): Flow<List<Lecturer>>
 
     @Insert
@@ -46,8 +47,17 @@ interface UniDao {
     @Query("UPDATE course SET name=:name, location=:location where id=:id")
     fun updateCourse(id: Long, name: String, location: String)
 
-    @Query("SELECT courseoffering.id as id, course.name AS coursename, lecturer.name AS lecturername, courseoffering.year, courseoffering.semester FROM course,courseoffering,lecturer WHERE lecturer.name=:lect AND lecturerId=lecturer.id AND courseId=course.id ORDER BY courseoffering.year, coursename")
-    fun getCourseInfo(lect: String): Flow<List<CourseInfo>>
+    @Query("SELECT courseoffering.id as id, course.name AS coursename, lecturer.name AS lecturername, courseoffering.year AS year, courseoffering.semester AS semester FROM course,courseoffering,lecturer WHERE lecturer.name=:lect AND lecturerId=lecturer.id AND courseId=course.id ORDER BY "+
+            "CASE :ordering WHEN 'year' THEN year " +
+            "WHEN 'semester' THEN semester "+
+            "WHEN 'coursename' THEN coursename END ASC")
+    fun getCourseInfoAsc(lect: String, ordering: String): Flow<List<CourseInfo>>
+
+    @Query("SELECT courseoffering.id as id, course.name AS coursename, lecturer.name AS lecturername, courseoffering.year AS year, courseoffering.semester AS semester FROM course,courseoffering,lecturer WHERE lecturer.name=:lect AND lecturerId=lecturer.id AND courseId=course.id ORDER BY "+
+            "CASE :ordering WHEN 'year' THEN year " +
+            "WHEN 'semester' THEN semester "+
+            "WHEN 'coursename' THEN coursename END DESC")
+    fun getCourseInfoDesc(lect: String, ordering: String): Flow<List<CourseInfo>>
 
     @Query("UPDATE courseoffering SET lecturerId=:lecturerId, courseId=:courseId, year=:year, semester=:semester where id=:id")
     fun updateOffering(id: Long, lecturerId: Long, courseId: Long, year: Int, semester: Int)

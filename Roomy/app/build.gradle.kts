@@ -17,10 +17,8 @@ android {
         versionCode=1
         versionName="1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
     }
+
     buildTypes {
         release {
             isMinifyEnabled=true
@@ -45,6 +43,9 @@ android {
         }
     }
 
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
 }
 
 dependencies {
@@ -63,7 +64,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-//    implementation(libs.androidx.material.icons.extended)
     debugImplementation(libs.ui.tooling)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.room.runtime)

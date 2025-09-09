@@ -6,7 +6,7 @@ interface CourseInterface {
     fun getAllCourses(): Flow<List<Course>>
     fun getAllLecturers(): Flow<List<Lecturer>>
     fun allOfferings(): Flow<List<CourseOffering>>
-    fun getCourseInfo(lect: String): Flow<List<CourseInfo>>
+    fun getCourseInfo(lect: String, orderby: String, asc: Boolean): Flow<List<CourseInfo>>
     fun newLecturer(name: String, phone: String, office: String)
     fun newCourse(name: String, location: String)
     fun updateLecturer(id: Long, name: String, phone: String, office: String)

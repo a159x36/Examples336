@@ -1,10 +1,12 @@
 package nz.massey.roomy
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import nz.massey.roomy.UniDatabase.Companion.getDatabase
 
@@ -26,7 +28,12 @@ class CourseViewModel(context:Context) : ViewModel(), CourseInterface {
 
     override fun getAllLecturers() = mDao.allLecturers()
 
-    override fun getCourseInfo(lect: String) = mDao.getCourseInfo(lect)
+    override fun getCourseInfo(lect: String, orderby: String, asc: Boolean): Flow<List<CourseInfo>> {
+        if(asc)
+            return mDao.getCourseInfoAsc(lect, orderby)
+        else
+            return mDao.getCourseInfoDesc(lect, orderby)
+    }
 
     override fun newOffering(lectid: Long, courseid: Long, year: Int, semester: Int) {
         CoroutineScope(Dispatchers.IO).launch {
