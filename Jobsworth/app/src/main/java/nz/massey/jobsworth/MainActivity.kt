@@ -12,7 +12,9 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -50,7 +52,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
         setContent{
-            Main(startIntent = {
+            Scaffold { padding ->
+                Main(
+                    modifier = Modifier.padding(padding), startIntent = {
                     startService(
                         Intent(
                             this,
@@ -58,37 +62,40 @@ class MainActivity : ComponentActivity() {
                         )
                     )
                 },
-                startJobIntent = {
-                    JobIntentService.enqueueWork(this,
-                        MyJobIntentService::class.java,
-                        159336,
-                        Intent())
-                },
-                startJobService = {
-                    MyJobService.scheduleJob(this)
-                },
-                playSound = {
-                    soundplaying.value = !soundplaying.value
-                    CoroutineScope(Dispatchers.Main).launch {
-                        if (!soundplaying.value) {
-                            mMp.pause()
-                        } else {
-                            mMp.start()
+                    startJobIntent = {
+                        JobIntentService.enqueueWork(
+                            this,
+                            MyJobIntentService::class.java,
+                            159336,
+                            Intent()
+                        )
+                    },
+                    startJobService = {
+                        MyJobService.scheduleJob(this)
+                    },
+                    playSound = {
+                        soundplaying.value = !soundplaying.value
+                        CoroutineScope(Dispatchers.Main).launch {
+                            if (!soundplaying.value) {
+                                mMp.pause()
+                            } else {
+                                mMp.start()
+                            }
                         }
+
+
+                    },
+                    startWorkManager = {
+                        val workRequest = OneTimeWorkRequestBuilder<MyWorker>().build()
+                        WorkManager.getInstance(this).enqueue(workRequest)
+                    },
+                    startFgService = {
+                        startForegroundService(Intent(this, MyFgService::class.java))
+                    }, startPop = {
+                        soundPool.play(soundID, 1f, 1f, 0, 0, 1f)
                     }
-
-
-                },
-                startWorkManager = {
-                    val workRequest = OneTimeWorkRequestBuilder<MyWorker>().build()
-                    WorkManager.getInstance(this).enqueue(workRequest)
-                },
-                startFgService = {
-                    startForegroundService(Intent(this,MyFgService::class.java))
-                }, startPop = {
-                    soundPool.play(soundID, 1f, 1f, 0, 0, 1f)
-                }
-            )
+                )
+            }
         }
         if(Build.VERSION.SDK_INT>=33) {
             if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {

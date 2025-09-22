@@ -7,6 +7,9 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+import android.os.Build
 import android.os.SystemClock
 import android.util.Log
 
@@ -33,7 +36,10 @@ class MyIntentService : IntentService(TAG) {
                 .setContentTitle("Service")
         for (i in 0..9) {
             Log.i(TAG, "I'm a Service:$i")
-            startForeground(1, mBuilder.setContentText("Number:$i").build())
+            if(Build.VERSION.SDK_INT>=29)
+                startForeground(1, mBuilder.setContentText("Number:$i").build(), FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+            else
+                startForeground(1, mBuilder.setContentText("Number:$i").build())
             SystemClock.sleep(1000)
         }
     }
