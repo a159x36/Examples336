@@ -8,12 +8,12 @@ kotlinxSerializationJson = "1.9.0"
 lifecycleRuntimeKtx = "2.9.4"
 kotlin = "2.2.20"
 coreKtx = "1.17.0"
-composeBom = "2025.09.00"
-navigationCompose = "2.9.4"
-roomRuntime = "2.7.2"
-uiTooling = "1.9.1"
-room = "2.7.2"
-ksp = "2.2.10-2.0.2"
+composeBom = "2025.09.01"
+navigationCompose = "2.9.5"
+roomRuntime = "2.8.1"
+uiTooling = "1.9.2"
+room = "2.8.1"
+ksp = "2.2.20-2.0.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
