@@ -85,16 +85,9 @@ class Bubbles(viewModel: SettingsViewModel) {
         return newvalue
     }
 
-    fun update(dt:Float) {
+    fun updateArray(dt:Float, bubbleData: FloatArray) {
         val dampening=viewmodel.dampening.value
         val rigidity=viewmodel.rigidity.value
-        if(viewmodel.native.value) {
-            if(viewmodel.usedirect.value)
-                nativeUpdateBuffer(viewmodel.nbubbles.value,grabbedBubbleIndex,csize.width.toInt(),csize.height.toInt(),dt,mGravityX,mGravityY,(bubbleData as BubbleDataFloatBuffer).bubbleData,rigidity,dampening,viewmodel.compress.value)
-            else
-                nativeUpdateArray(viewmodel.nbubbles.value,grabbedBubbleIndex,csize.width.toInt(),csize.height.toInt(),dt,mGravityX,mGravityY,(bubbleData as BubbleDataFloatArray).bubbleData,rigidity,dampening,viewmodel.compress.value)
-            return
-        }
         for (i in 0..(viewmodel.nbubbles.value - 1) * 6 step 6) {
             if(i!=grabbedBubbleIndex) {
                 val newx = bubbleData[i + X] + bubbleData[i + VX] * dt * 100
@@ -155,6 +148,88 @@ class Bubbles(viewModel: SettingsViewModel) {
                 }
             }
         }
+    }
+
+    fun updateBuffer(dt:Float, bubbleData: FloatBuffer) {
+        val dampening=viewmodel.dampening.value
+        val rigidity=viewmodel.rigidity.value
+        for (i in 0..(viewmodel.nbubbles.value - 1) * 6 step 6) {
+            if(i!=grabbedBubbleIndex) {
+                val newx = bubbleData[i + X] + bubbleData[i + VX] * dt * 100
+                val newy = bubbleData[i + Y] + bubbleData[i + VY] * dt * 100
+                bubbleData.put(i + X,
+                    clampWithAction(newx, bubbleData[i + CR], csize.width - bubbleData[i + CR]) {
+                        bubbleData.put(i + VX, bubbleData[i + VX] * -dampening)
+                    })
+                bubbleData.put(i + Y,
+                    clampWithAction(newy, bubbleData[i + CR], csize.height - bubbleData[i + CR]) {
+                        bubbleData.put(i + VY, bubbleData[i + VY] * -dampening)
+                    })
+                bubbleData.put(i + VX, bubbleData[i + VX] + dt * mGravityX * 10)
+                bubbleData.put(i + VY, bubbleData[i + VY] + dt * mGravityY * 10)
+            }
+        }
+
+        for (i in 0..(viewmodel.nbubbles.value - 1) * 6 step 6) {
+            val x = bubbleData[i + X]
+            val y = bubbleData[i + Y]
+            val r = bubbleData[i + RR]
+            bubbleData.put(i + CR,  r)
+            for (j in (i + 6)..(viewmodel.nbubbles.value - 1) * 6 step 6) {
+
+                val x1 = bubbleData[j + X]
+                val y1 = bubbleData[j + Y]
+                val r1 = bubbleData[j + RR]
+                var d = (x1 - x) * (x1 - x) + (y1 - y) * (y1 - y)
+                if (d < (r1 + r) * (r1 + r)) {
+                    d = sqrt(d)
+                    if (viewmodel.compress.value) {
+                        var sz = d - bubbleData[j + CR]
+                        var sz1 = d - bubbleData[i + CR]
+                        if (sz < 16f)
+                            sz = 16f
+                        if (sz < bubbleData[i + CR])
+                            bubbleData.put(i + CR, sz)
+                        if (sz1 < 16f)
+                            sz1 = 16f
+                        if (sz1 < bubbleData[j + CR])
+                            bubbleData.put(j + CR, sz1)
+                    }
+                    var dx = x1 - x
+                    var dy = y1 - y
+                    if (d != 0f) {
+                        dx = dx / d
+                        dy = dy / d
+                    }
+                    val displacement = (r + r1) - d
+                    bubbleData.put(i + VX,
+                        (bubbleData[i + VX] - rigidity * dx * displacement) * dampening)
+                    bubbleData.put(i + VY,
+                        (bubbleData[i + VY] - rigidity * dy * displacement) * dampening)
+                    bubbleData.put(j + VX,
+                        (bubbleData[j + VX] + rigidity * dx * displacement) * dampening)
+                    bubbleData.put(j + VY,
+                        (bubbleData[j + VY] + rigidity * dy * displacement) * dampening)
+                }
+            }
+        }
+    }
+
+    fun update(dt:Float) {
+        val dampening=viewmodel.dampening.value
+        val rigidity=viewmodel.rigidity.value
+        if(viewmodel.native.value) {
+            if(viewmodel.usedirect.value)
+                nativeUpdateBuffer(viewmodel.nbubbles.value,grabbedBubbleIndex,csize.width.toInt(),csize.height.toInt(),dt,mGravityX,mGravityY,(bubbleData as BubbleDataFloatBuffer).bubbleData,rigidity,dampening,viewmodel.compress.value)
+            else
+                nativeUpdateArray(viewmodel.nbubbles.value,grabbedBubbleIndex,csize.width.toInt(),csize.height.toInt(),dt,mGravityX,mGravityY,(bubbleData as BubbleDataFloatArray).bubbleData,rigidity,dampening,viewmodel.compress.value)
+            return
+        }
+        if(viewmodel.usedirect.value)
+            updateBuffer(dt,(bubbleData as BubbleDataFloatBuffer).bubbleData)
+        else
+            updateArray(dt,(bubbleData as BubbleDataFloatArray).bubbleData)
+
     }
 
 
