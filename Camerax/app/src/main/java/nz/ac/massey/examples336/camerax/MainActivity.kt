@@ -25,6 +25,7 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -66,7 +67,7 @@ fun openGallery(context:Context) {
     val photoId = imageCursor.getLong(0)
     imageCursor.close()
 
-    Log.i(TAG, "id=" + photoId)
+    Log.i(TAG, "id=$photoId")
     val intent = Intent(Intent.ACTION_VIEW)
     intent.setDataAndType(
         Uri.withAppendedPath(
@@ -154,9 +155,9 @@ fun CameraApp(modifier: Modifier = Modifier, viewModel: CameraViewModel=viewMode
 
     Box(modifier=modifier.fillMaxSize()) {
         CameraPreview(
-            modifier,viewModel
+            Modifier,viewModel
         )
-        Box(modifier=modifier.fillMaxSize()) {
+        Box(modifier=Modifier.fillMaxSize()) {
             Image(
                 modifier = Modifier.align(Alignment.BottomCenter)
                     .padding(48.dp).size(64.dp)
@@ -222,7 +223,7 @@ fun CameraScreenPreview() {
 }
 
 class MainActivity : ComponentActivity() {
-    private val REQUIRED_PERMISSIONS =
+    private val permissions =
             mutableListOf (
                 Manifest.permission.CAMERA,
                 Manifest.permission.RECORD_AUDIO
@@ -243,7 +244,7 @@ class MainActivity : ComponentActivity() {
                 // Handle Permission granted/rejected
                 var permissionGranted = true
                 permissions.entries.forEach {
-                    if (it.key in REQUIRED_PERMISSIONS && it.value == false)
+                    if (it.key in this@MainActivity.permissions && !it.value)
                         permissionGranted = false
                 }
                 if (!permissionGranted) {
@@ -255,13 +256,11 @@ class MainActivity : ComponentActivity() {
                 } else {
                     setContent {
                         CameraxTheme {
-                            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                                CameraApp(modifier=Modifier.padding(innerPadding))
-                            }
+                            CameraApp(modifier=Modifier)
                         }
                     }
                 }
             }
-        activityResultLauncher.launch(REQUIRED_PERMISSIONS)
+        activityResultLauncher.launch(permissions)
     }
 }
