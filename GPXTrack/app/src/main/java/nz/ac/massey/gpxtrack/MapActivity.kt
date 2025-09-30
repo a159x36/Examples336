@@ -66,7 +66,7 @@ class MapActivity : ComponentActivity() {
                 viewBitmap,
                 { i: Int ->
                     viewmodel.showicons(true)
-                    val path = MediaStore.Images.Media.insertImage(
+                    @Suppress("DEPRECATION") val path = MediaStore.Images.Media.insertImage(
                         contentResolver,
                         viewBitmap,
                         UUID.randomUUID().toString(),
@@ -104,8 +104,10 @@ class MapActivity : ComponentActivity() {
         if (intent != null) {
             Log.i(TAG,"Intent: $intent ${intent.action} ${intent.type}")
             if (intent.action == Intent.ACTION_SEND) {
-                val uri = if(Build.VERSION.SDK_INT<33) intent.getParcelableExtra(Intent.EXTRA_STREAM)
-                else intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
+                val uri = if(Build.VERSION.SDK_INT<33) {
+                    @Suppress("DEPRECATION")
+                    intent.getParcelableExtra(Intent.EXTRA_STREAM)
+                } else intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
                 if (uri != null) {
                     viewmodel.uri=uri
                 }

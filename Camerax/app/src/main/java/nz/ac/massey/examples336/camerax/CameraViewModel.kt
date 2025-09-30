@@ -1,12 +1,10 @@
 package nz.ac.massey.examples336.camerax
 
-import android.R.attr.screenSize
 import android.content.Context
 import android.util.Size
 import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY
 import androidx.camera.core.Preview
 import androidx.camera.core.SurfaceRequest
 import androidx.camera.core.UseCaseGroup
@@ -15,7 +13,6 @@ import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.lifecycle.awaitInstance
-import androidx.camera.video.FallbackStrategy
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
@@ -46,9 +43,6 @@ class CameraViewModel: ViewModel() {
 
     suspend fun bindToCamera(appContext: Context, lifecycleOwner: LifecycleOwner) {
         val processCameraProvider = ProcessCameraProvider.awaitInstance(appContext)
-
-
-
         val useCaseGroup = UseCaseGroup.Builder()
             .addUseCase(previewUseCase)         // Add Preview UseCase
             .addUseCase(imageCapture) // Add Image Capture UseCase
