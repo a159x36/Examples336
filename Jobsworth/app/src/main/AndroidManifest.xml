@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_TYPE_SHORT_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -24,7 +24,7 @@
             android:name=".MyJobIntentService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:foregroundServiceType="specialUse"
+            android:foregroundServiceType="shortService"
             android:name=".MyIntentService" />
         <service
             android:name=".MyJobService"

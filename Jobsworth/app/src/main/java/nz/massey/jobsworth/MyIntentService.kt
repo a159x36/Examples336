@@ -36,11 +36,9 @@ class MyIntentService : IntentService(TAG) {
                 .setContentTitle("Service")
         for (i in 0..9) {
             Log.i(TAG, "I'm a Service:$i")
-            if(Build.VERSION.SDK_INT>=29)
-                startForeground(1, mBuilder.setContentText("Number:$i").build(), FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
-            else
-                startForeground(1, mBuilder.setContentText("Number:$i").build())
+            startForeground(1, mBuilder.setContentText("Number:$i").build())
             SystemClock.sleep(1000)
         }
+        stopForeground(true)
     }
 }

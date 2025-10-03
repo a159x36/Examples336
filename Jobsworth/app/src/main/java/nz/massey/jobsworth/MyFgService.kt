@@ -16,23 +16,20 @@ private const val TAG = "MyFgService"
 class MyFgService : Service() {
     private val handler = Handler(Looper.getMainLooper())
 
+    private var counter=0
     fun work() {
-        Log.i(TAG, "I'm a Foreground Service, the time is: ${System.currentTimeMillis()/1000}")
-        handler.postDelayed(::work, 5000)
-    }
-
-    override fun onCreate() {
-        super.onCreate()
+        Log.i(TAG, "I'm a Foreground Service:$counter, the time is: ${System.currentTimeMillis()/1000}")
+        if(counter>10)
+            stopForeground(STOP_FOREGROUND_REMOVE)
+        else
+            handler.postDelayed(::work, 5000)
+        counter++
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         startForeground(1, createNotification())
         handler.post(::work)
         return START_STICKY
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
