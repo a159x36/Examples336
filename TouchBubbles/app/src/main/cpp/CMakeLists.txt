@@ -2,7 +2,7 @@
 # This ensures that a certain set of CMake features is available to
 # your build.
 
-cmake_minimum_required(VERSION 4.1.0)
+cmake_minimum_required(VERSION 3.22.0)
 
 project(touchbubbles)
 # Specifies a library name, specifies whether the library is STATIC or
