@@ -1,12 +1,11 @@
 plugins {
     alias(libs.plugins.com.android.application)
-    alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
 }
 
 android {
     namespace = "nz.ac.massey.gpxtrack"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "nz.ac.massey.wingtrack"
@@ -20,10 +19,6 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
         }
     }
     compileOptions {

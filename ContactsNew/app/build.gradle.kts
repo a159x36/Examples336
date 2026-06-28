@@ -2,13 +2,12 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.org.jetbrains.kotlin.android)
 }
 
 
 android {
     namespace="nz.massey.contacts"
-    compileSdk=36
+    compileSdk=37
     defaultConfig {
         applicationId= "nz.massey.contacts"
         minSdk=23
@@ -21,7 +20,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled=true
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            isShrinkResources=true
             signingConfig = signingConfigs.getByName("debug")
         }
     }

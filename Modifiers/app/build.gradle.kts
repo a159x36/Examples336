@@ -2,16 +2,15 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.org.jetbrains.kotlin.android)
 }
 
 
 android {
     namespace="com.example.mjjohnso.modifiers"
-    compileSdk=36
+    compileSdk=37
     defaultConfig {
         applicationId="com.example.mjjohnso.modifiers"
-        minSdk=21
+        minSdk=23
         targetSdk=36
         versionCode=1
         versionName="1.0"
@@ -19,8 +18,8 @@ android {
     }
     buildTypes {
         release {
-            isMinifyEnabled=false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            isMinifyEnabled=true
+            isShrinkResources=true
         }
     }
 

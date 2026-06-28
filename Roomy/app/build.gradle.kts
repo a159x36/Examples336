@@ -2,14 +2,13 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.google.devtools.ksp)
     alias(libs.plugins.serialization)
 }
 
 android {
     namespace="nz.massey.roomy"
-    compileSdk=36
+    compileSdk=37
     defaultConfig {
         applicationId= "nz.massey.roomy"
         minSdk=23
@@ -22,7 +21,6 @@ android {
     buildTypes {
         release {
             isMinifyEnabled=true
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("debug")
         }
     }

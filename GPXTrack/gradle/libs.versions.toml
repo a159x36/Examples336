@@ -1,19 +1,19 @@
 [versions]
-agp = "8.13.0"
+agp = "9.2.1"
 androidGpxParser = "2.3.1"
-activityCompose = "1.11.0"
+activityCompose = "1.13.0"
 playServicesLocation = "21.3.0"
-uiTooling = "1.9.1"
-datastorePreferences = "1.1.7"
+uiTooling = "1.11.3"
+datastorePreferences = "1.2.1"
 mapsCompose = "6.10.0"
 playServicesWearable = "19.0.0"
 junit = "4.13.2"
 espressoCore = "3.7.0"
 junitVersion = "1.3.0"
-coreKtx = "1.17.0"
-kotlin = "2.2.20"
-composeBom = "2025.09.00"
-lifecycleViewmodelCompose = "2.9.4"
+coreKtx = "1.19.0"
+kotlin = "2.4.0"
+composeBom = "2026.06.00"
+lifecycleViewmodelCompose = "2.9.3"
 
 [libraries]
 android-gpx-parser = { module = "com.github.ticofab:android-gpx-parser", version.ref = "androidGpxParser" }

@@ -1,12 +1,11 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
 
 android {
     namespace = "nz.ac.massey.examples336.camerax"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "nz.ac.massey.examples336.camerax"
@@ -21,10 +20,6 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
         }
     }
     compileOptions {

@@ -2,12 +2,11 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.org.jetbrains.kotlin.android)
 }
 
 android {
     namespace="com.android.dzclock"
-    compileSdk=36
+    compileSdk=37
     defaultConfig {
         applicationId= "nz.massey.powerclock"
         minSdk=26
@@ -19,7 +18,6 @@ android {
     buildTypes {
         release {
             isMinifyEnabled=true
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("debug")
         }
     }
