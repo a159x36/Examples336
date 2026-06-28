@@ -6,10 +6,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Settings
+//import androidx.compose.material.icons.Icons
+//import androidx.compose.material.icons.filled.MoreVert
+//import androidx.compose.material.icons.filled.Refresh
+//import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
@@ -74,10 +75,10 @@ fun AppBar(showDialog: MutableState<Boolean>?=null, modifier:Modifier, navContro
         title = { Text(text = "Bubbles") },
         actions = {
             IconButton(onClick = { navController.navigate("settings") }) {
-                Icon(Icons.Filled.Settings, null)
+                Icon(painter=painterResource(id = R.drawable.ic_settings_24dp)  , null)
             }
             IconButton(onClick = { showDropDownMenu = true }) {
-                Icon(Icons.Filled.MoreVert, null)
+                Icon(painter=painterResource(id = R.drawable.more_vert_24px), null)
             }
             DropdownMenu(
                 expanded = showDropDownMenu,
@@ -85,7 +86,7 @@ fun AppBar(showDialog: MutableState<Boolean>?=null, modifier:Modifier, navContro
             ) {
                 DropdownMenuItem(
                     text = { Text(text = "Restart") },
-                    leadingIcon = { Icon(Icons.Filled.Refresh, null) },
+                    leadingIcon = { Icon(painter=painterResource(id = R.drawable.ic_refresh_black_24dp), null) },
                     onClick = {
                         showDropDownMenu = false
                         showDialog?.value = true
