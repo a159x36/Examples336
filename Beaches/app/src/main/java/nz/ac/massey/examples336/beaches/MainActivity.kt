@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -120,7 +119,7 @@ class MainActivity : ComponentActivity() {
     fun Beaches(modifier: Modifier = Modifier) {
         Scaffold(modifier, topBar = { TopAppBar(
                 title = { Text("Beaches") },
-            actions = {IconButton(onClick = {reload.intValue++}) {Icon(Icons.Default.Refresh,"")}
+            actions = {IconButton(onClick = {reload.intValue++}) {Icon(painter=painterResource(id = R.drawable.ic_refresh_black_24dp),"")}
             })
         }) { innerPadding ->
             Box {

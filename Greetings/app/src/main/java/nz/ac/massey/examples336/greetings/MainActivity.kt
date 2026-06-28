@@ -45,13 +45,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -86,6 +79,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
@@ -468,25 +462,26 @@ fun Greeting23() {
         Scaffold(
             topBar = { TopAppBar(
                 title = { Text(stringResource(R.string.app_name)) },
-                navigationIcon = { IconButton({/*TODO*/}) {Icon(Icons.Default.Menu,
+                navigationIcon = { IconButton({/*TODO*/}) {Icon(
+                    painterResource(R.drawable.more_vert_24px),
                     contentDescription = null)}},
                 actions={
                     IconButton({/*TODO*/}) {
-                        Icon(Icons.Default.Share,
+                        Icon(painterResource(R.drawable.ic_share_24px),
                             contentDescription = stringResource(R.string.share))
                     }
                     IconButton(onClick = {showmenu=!showmenu}) {
-                        Icon(Icons.Default.MoreVert,
+                        Icon(painterResource(R.drawable.more_vert_24px),
                             contentDescription = stringResource(R.string.open_menu)
                         )
                     }
                     DropdownMenu(showmenu, {showmenu=false}) {
                         DropdownMenuItem(text={Text(stringResource(R.string.delete))},
                             onClick = { /*TODO*/ showmenu=false },
-                            leadingIcon = { Icon(Icons.Default.Delete,null)})
+                            leadingIcon = { Icon(painterResource(R.drawable.ic_delete),null)})
                         DropdownMenuItem(text={Text(stringResource(R.string.settings))},
                             onClick = { /*TODO*/ showmenu=false},
-                            leadingIcon = { Icon(Icons.Default.Settings,null)})
+                            leadingIcon = { Icon(painterResource(R.drawable.ic_settings_24dp),null)})
                     }
                 }
             )}
@@ -536,7 +531,7 @@ fun Greeting26() {
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
         AlertDialog(
-            icon = { Icon(Icons.Default.Person, null) },
+            icon = { Icon(painterResource(R.drawable.ic_settings_24dp), null) },
             title = { Text(text = "Dialog") },
             text = { Text(text = "Here is a Dialog") },
             onDismissRequest = { showDialog = false },

@@ -11,11 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
@@ -39,6 +34,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -73,7 +69,7 @@ fun AppBar(modifier:Modifier, navController: NavHostController) {
         title = { Text(text = "Uni Roomy") },
         actions = {
             IconButton(onClick = { showDropDownMenu = true }) {
-                Icon(Icons.Filled.MoreVert, null)
+                Icon(painterResource(R.drawable.more_vert_24px), null)
             }
             DropdownMenu(
                 expanded = showDropDownMenu,
@@ -108,7 +104,7 @@ fun AddOffering (viewmodel: CourseInterface = MockViewModel(), navigateBack: () 
                 title = { Text("Add Course Offering") },
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(painterResource(R.drawable.arrow_back), "Back")
                     }
                 },
             )
@@ -174,7 +170,7 @@ fun EditOffering (viewmodel: CourseInterface = MockViewModel(), navigateBack: ()
         topBar = { CenterAlignedTopAppBar(
             title = { Text("Edit Course Offering") },
             navigationIcon = { IconButton(onClick = navigateBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },) },
+                Icon(painterResource(R.drawable.arrow_back), "Back") } },) },
     ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding),
@@ -272,7 +268,7 @@ fun Dropdown(label:String, names: List<String>, selected: String, modifier: Modi
                 Text(
                     selected, modifier = Modifier.clickable(onClick = { showDropDownMenu = true }),
                     style = AppTypography.titleLarge)
-                Icon(Icons.Filled.ArrowDropDown,"Select Value",
+                Icon(painterResource(R.drawable.outline_arrow_drop_down_24),"Select Value",
                     modifier = Modifier.padding(0.dp).clickable(true, onClick = { showDropDownMenu = true }))
             }
 
@@ -315,7 +311,7 @@ fun Offerings(modifier: Modifier=Modifier, viewmodel: CourseInterface = MockView
             FloatingActionButton(
                 modifier = modifier.padding(16.dp),
                 onClick = { navController.navigate(AddOffering(selectedIndex)) },
-                content = { Icon(Icons.Filled.Add, contentDescription = "Add") })
+                content = { Icon(painterResource(R.drawable.baseline_add_24), contentDescription = "Add") })
         }, topBar = {
             AppBar(modifier, navController)
         }
@@ -361,7 +357,7 @@ fun AddCourse (viewmodel: CourseInterface = MockViewModel(), navigateBack: () ->
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            painterResource(R.drawable.arrow_back),
                             contentDescription = "Back"
                         )
                     }
@@ -403,7 +399,7 @@ fun AddCourse (viewmodel: CourseInterface = MockViewModel(), navigateBack: () ->
 fun AddLecturer (viewmodel: CourseInterface = MockViewModel(), navigateBack: () -> Unit = {}) {
     Scaffold(topBar = { CenterAlignedTopAppBar(title = { Text("Add Lecturer") },
                 navigationIcon = { IconButton(onClick = navigateBack) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back") } },) },
+                        Icon(painterResource(R.drawable.arrow_back), contentDescription = "Back") } },) },
     ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding),
@@ -437,7 +433,7 @@ fun EditLecturer (viewmodel: CourseInterface = MockViewModel(), navigateBack: ()
 
     Scaffold(topBar = { CenterAlignedTopAppBar(title = { Text("Edit Lecturer") },
         navigationIcon = { IconButton(onClick = navigateBack) {
-            Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back") } },) },
+            Icon(painterResource(R.drawable.arrow_back), contentDescription = "Back") } },) },
     ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding),
@@ -471,7 +467,7 @@ fun EditCourse(viewmodel: CourseInterface = MockViewModel(), navigateBack: () ->
 
     Scaffold(topBar = { CenterAlignedTopAppBar(title = { Text("Edit Course") },
         navigationIcon = { IconButton(onClick = navigateBack) {
-            Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back") } },) },
+            Icon(painterResource(R.drawable.arrow_back), contentDescription = "Back") } },) },
     ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding),
@@ -515,7 +511,7 @@ fun Lecturers (viewmodel: CourseInterface = MockViewModel(), navController: NavH
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            painterResource(R.drawable.arrow_back),
                             contentDescription = "Back"
                         )
                     }
@@ -526,7 +522,7 @@ fun Lecturers (viewmodel: CourseInterface = MockViewModel(), navController: NavH
             FloatingActionButton(
                 modifier = Modifier.padding(16.dp),
                 onClick = { navController.navigate("addLecturer") },
-                content = { Icon(Icons.Filled.Add, contentDescription = "Add") })
+                content = { Icon(painterResource(R.drawable.baseline_add_24), contentDescription = "Add") })
         },
     ) { innerPadding ->
         Column(
@@ -566,12 +562,12 @@ fun Courses (viewmodel: CourseInterface = MockViewModel(), navController: NavHos
     val courses = viewmodel.getAllCourses().collectAsState(emptyList()).value
     Scaffold(topBar = { CenterAlignedTopAppBar(title = { Text("Courses") },
                 navigationIcon = { IconButton(onClick = navigateBack) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back") } },)},
+                        Icon(painterResource(R.drawable.arrow_back), contentDescription = "Back") } },)},
                       floatingActionButton = {
             FloatingActionButton(
                 modifier = Modifier.padding(16.dp),
                 onClick = { navController.navigate("addCourse") },
-                content = { Icon(Icons.Filled.Add, contentDescription = "Add") })
+                content = { Icon(painterResource(R.drawable.baseline_add_24), contentDescription = "Add") })
         },
     ) { innerPadding ->
         Column(

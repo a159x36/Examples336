@@ -7,9 +7,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -36,6 +33,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.IntOffset
@@ -72,9 +70,9 @@ fun AppBar(showDialog: MutableState<Boolean>, modifier:Modifier) {
         modifier = modifier,
         title = { Text(text = "Bubbles") },
         actions = {
-            IconButton(onClick = { showDialog.value=true}) {Icon(Icons.Filled.Refresh, null)}
+            IconButton(onClick = { showDialog.value=true}) {Icon(painterResource(id = R.drawable.ic_refresh_black_24dp), null)}
             IconButton(onClick = { showDropDownMenu = true}) {
-                Icon(Icons.Filled.MoreVert, null)
+                Icon(painterResource(id = R.drawable.more_vert_24px), null)
             }
             DropdownMenu(
                 expanded = showDropDownMenu,
@@ -82,7 +80,7 @@ fun AppBar(showDialog: MutableState<Boolean>, modifier:Modifier) {
             ) {
                 DropdownMenuItem(
                     text = { Text(text = "Restart") },
-                    leadingIcon = { Icon(Icons.Filled.Refresh, null) },
+                    leadingIcon = { Icon(painterResource(id = R.drawable.ic_refresh_black_24dp), null) },
                     onClick = {
                         showDropDownMenu = false
                         showDialog.value = true

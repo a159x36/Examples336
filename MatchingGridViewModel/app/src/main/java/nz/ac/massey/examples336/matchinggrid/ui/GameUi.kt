@@ -27,9 +27,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -151,7 +148,7 @@ fun AppBar(viewModel:MatchingGameViewModel, showDialog: MutableState<Boolean>, m
         title = { Text(text = scorestring) },
         actions = {
             IconButton(onClick = { showDropDownMenu = true }) {
-                Icon(Icons.Filled.MoreVert, null)
+                Icon(painterResource(id = R.drawable.more_vert_24px), null)
             }
             DropdownMenu(
                 expanded = showDropDownMenu,
@@ -160,7 +157,7 @@ fun AppBar(viewModel:MatchingGameViewModel, showDialog: MutableState<Boolean>, m
             ) {
                 DropdownMenuItem(
                     text = { Text(text = stringResource(R.string.restart)) },
-                    leadingIcon = { Icon(Icons.Filled.Refresh, null) },
+                    leadingIcon = { Icon(painterResource(id = R.drawable.ic_refresh_black_24dp), null) },
                     onClick = {
                         showDropDownMenu = false
                         showDialog.value = true
