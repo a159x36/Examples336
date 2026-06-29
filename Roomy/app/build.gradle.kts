@@ -12,7 +12,7 @@ android {
     defaultConfig {
         applicationId= "nz.massey.roomy"
         minSdk=23
-        targetSdk=36
+        targetSdk=37
         versionCode=1
         versionName="1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -21,6 +21,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled=true
+            isShrinkResources = true
             signingConfig = signingConfigs.getByName("debug")
         }
     }
@@ -34,16 +35,16 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+}
 
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-        }
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
+}
 
-    ksp {
-        arg("room.schemaLocation", "$projectDir/schemas")
-    }
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {

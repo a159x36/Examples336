@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId= "nz.ac.massey.examples336.simplebubbles"
         minSdk=23
-        targetSdk=36
+        targetSdk=37
         versionCode=1
         versionName="1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
