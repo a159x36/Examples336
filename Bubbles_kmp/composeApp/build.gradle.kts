@@ -14,7 +14,7 @@ plugins {
 kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     android {
-        namespace = "nz.ac.massey.examples336.touchbubbles"
+        namespace = "nz.ac.massey.examples336.sharedtouchbubbles"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
 
