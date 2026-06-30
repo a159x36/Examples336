@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "nz.ac.massey.examples336.camerax"
-        minSdk = 26
+        minSdk=26
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"

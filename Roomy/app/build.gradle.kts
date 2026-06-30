@@ -11,7 +11,7 @@ android {
     compileSdk=37
     defaultConfig {
         applicationId= "nz.massey.roomy"
-        minSdk=23
+        minSdk=26
         targetSdk=37
         versionCode=1
         versionName="1.0"
