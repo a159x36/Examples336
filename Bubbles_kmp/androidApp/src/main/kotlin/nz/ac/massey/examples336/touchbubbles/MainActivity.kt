@@ -1,16 +1,18 @@
 package nz.ac.massey.examples336.touchbubbles
 
+import android.app.Activity
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.activity.ComponentActivity
 
 class MainActivity : ComponentActivity(), SensorEventListener {
 
@@ -31,12 +33,12 @@ class MainActivity : ComponentActivity(), SensorEventListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
 
         setContent {
             Navigation(viewmodel)
         }
-        sensormanager = getSystemService(SENSOR_SERVICE) as SensorManager
+        sensormanager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         accelerometer = sensormanager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
     }
 

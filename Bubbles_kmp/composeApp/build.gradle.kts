@@ -1,4 +1,6 @@
+import org.gradle.declarative.dsl.schema.FqName.Empty.packageName
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.compose.reload.core.Environment.Companion.application
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -12,17 +14,24 @@ plugins {
 }
 
 kotlin {
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+
+//    @OptIn(ExperimentalKotlinGradlePluginApi::class)
     android {
-        namespace = "nz.ac.massey.examples336.sharedtouchbubbles"
+        namespace = "nz.ac.massey.examples336.touchbubbles.shared"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
 
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
+        androidResources {
+            enable = true
+        }
+
+
     }
-    
+
+
     jvm("desktop")
     
     @OptIn(ExperimentalWasmDsl::class)
@@ -47,13 +56,16 @@ kotlin {
     
     sourceSets {
         val desktopMain by getting
-        
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ui.tooling.preview)
             implementation(compose.uiTooling)
+
         }
+
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
