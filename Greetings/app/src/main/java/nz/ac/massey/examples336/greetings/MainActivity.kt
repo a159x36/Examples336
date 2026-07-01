@@ -1,6 +1,7 @@
 package nz.ac.massey.examples336.greetings
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -86,6 +87,7 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -525,22 +527,30 @@ fun Greeting25() {
     }
 }
 
-@Preview (showBackground = true)
+@Preview (
+    showBackground = true,
+)
 @Composable
 fun Greeting26() {
     var showDialog by remember { mutableStateOf(false) }
-    if (showDialog) {
-        AlertDialog(
-            icon = { Icon(painterResource(R.drawable.ic_settings_24dp), null) },
-            title = { Text(text = "Dialog") },
-            text = { Text(text = "Here is a Dialog") },
-            onDismissRequest = { showDialog = false },
-            confirmButton = { Button(onClick = {})
-                { Text("OK") } },
-            dismissButton = { Button(onClick = { showDialog = false })
-                { Text("Close") } })
+    Scaffold { innerPadding ->
+        if (showDialog) {
+            AlertDialog(
+                icon = { Icon(painterResource(R.drawable.ic_settings_24dp), null) },
+                title = { Text(text = "Dialog") },
+                text = { Text(text = "Here is a Dialog") },
+                onDismissRequest = { showDialog = false },
+                confirmButton = {
+                    Button(onClick = {})
+                    { Text("OK") }
+                },
+                dismissButton = {
+                    Button(onClick = { showDialog = false })
+                    { Text("Close") }
+                })
+        }
+        Button(modifier = Modifier.padding(innerPadding), onClick = { showDialog = true }) { Text("Show Dialog") }
     }
-    Button({showDialog=true}) { Text("Show Dialog") }
 }
 
 @Preview (showBackground = true, showSystemUi = true)
