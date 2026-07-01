@@ -43,7 +43,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:mimeType="text/xml" />
+                <data
+                    android:host="*"
+                    android:mimeType="text/xml"
+                    android:scheme="file" />
                 <data android:mimeType="text/plain" />
                 <data android:mimeType="application/gpx" />
                 <data android:mimeType="application/gpx+xml" />
