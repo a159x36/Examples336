@@ -156,7 +156,7 @@ fun CanvasDrawText() {
 @Preview
 @Composable
 fun CanvasDrawImage() {
-    val dogImage = ImageBitmap.imageResource(id = R.drawable.ic_launcher_foreground)
+    val dogImage = ImageBitmap.imageResource(id = R.drawable.dog)
 
     Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
         drawImage(dogImage)
