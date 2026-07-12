@@ -69,7 +69,7 @@ class DzClock {
                     )
                 }
             }
-            rotate(degrees = hour * 30f) {
+            rotate(degrees = hour * 30f + minute * 0.5f) {
                 drawLine(
                     start = Offset(x, (y - (dialsize / 2) + 90)),
                     end = Offset(x, y), color =col, strokeWidth = 12f
